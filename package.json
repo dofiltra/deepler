@@ -14,7 +14,8 @@
     "prepare": "npm run build",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "debug": "npm run build && node ./lib/index.js"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,9 @@
     "lib/**/*"
   ],
   "dependencies": {
+    "browser-manager": "^1.0.8",
     "is-running-process": "^1.0.0",
+    "proxy-extract": "^1.0.2",
     "time-helpers": "^1.0.0"
   }
 }
