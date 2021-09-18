@@ -4,6 +4,7 @@ import { sleep } from 'time-helpers'
 
 type TDeeplSettings = {
   proxy?: ProxyList.IFreeProxy
+  headless?: boolean
 }
 
 type TTranslateOpts = {
@@ -31,6 +32,8 @@ class Deepler {
       return { translatedText: text }
     }
 
+    const { headless } = this._settings
+
     let proxy
     if (this._settings.proxy?.url) {
       proxy = {
@@ -41,61 +44,67 @@ class Deepler {
     const pwrt: BrowserManager = await BrowserManager.build({
       maxOpenedBrowsers,
       launchOpts: {
-        headless: true,
+        headless: headless !== false,
         proxy
       },
-      device: devices['Pixel 5']
+      device: devices['Pixel 5'],
+      lockCloseFirst: 120
     })
+    // console.log(await pwrt.checkIp())
     const page = (await pwrt.newPage({
-      autoCloseTimeout: 180e3,
       url: `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`,
       waitUntil: 'networkidle'
     })) as Page
 
     pwrt.lockClose(120)
-    const el = await page.$('button.lmt__translations_as_text__text_btn')
-    if (el) {
-      const translatedText = await el.innerText()
 
-      if (translatedText) {
-        let hash = page.url().split('#')[1]
+    try {
+      const el = await page.$('button.lmt__translations_as_text__text_btn')
+      if (el) {
+        const translatedText = await el.innerText()
 
-        if (!hash) {
-          await this.type(
-            page,
-            text
-              .split(' ')
-              .filter((x) => x?.trim())
-              .slice(0, 10)
-              .join(' ')
-          )
+        if (translatedText) {
+          let hash = page.url().split('#')[1]
 
-          try {
-            await page.waitForURL((url: URL) => !!url.hash, {
-              timeout: 5e3
-            })
-          } catch (e: any) {
-            // console.log(e)
+          if (!hash) {
+            await this.type(
+              page,
+              text
+                .split(' ')
+                .filter((x) => x?.trim())
+                .slice(0, 10)
+                .join(' ')
+            )
+
+            try {
+              await page.waitForURL((url: URL) => !!url.hash, {
+                timeout: 5e3
+              })
+            } catch (e: any) {
+              // console.log(e)
+            }
+            hash = page.url().split('#')[1]
           }
-          hash = page.url().split('#')[1]
-        }
 
-        if (hash) {
-          const langs = hash.split('/')
-          if (langs.length === 3) {
-            await pwrt?.close('from translate 2')
+          if (hash) {
+            const langs = hash.split('/')
+            if (langs.length === 3) {
+              await pwrt?.close('from translate 2')
 
-            return {
-              translatedText,
-              source_lang: langs[0]?.toUpperCase(),
-              target_lang: langs[1]?.toUpperCase()
+              return {
+                translatedText,
+                source_lang: langs[0]?.toUpperCase(),
+                target_lang: langs[1]?.toUpperCase()
+              }
             }
           }
-        }
 
-        await pwrt?.close('from translate 3')
-        return { translatedText }
+          await pwrt?.close('from translate 3')
+          return { translatedText }
+        }
       }
+    } catch {
+      // log
     }
 
     try {
@@ -140,7 +149,7 @@ class Deepler {
         return { translatedText, source_lang, target_lang }
       }
     } catch {
-        // log
+      // log
     }
 
     return null
