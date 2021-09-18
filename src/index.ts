@@ -139,7 +139,9 @@ class Deepler {
 
         return { translatedText, source_lang, target_lang }
       }
-    } catch {}
+    } catch {
+        // log
+    }
 
     return null
   }
