@@ -12,7 +12,6 @@ const debug = async () => {
     maxOpenedBrowsers: 10,
     tryLimit: 10
   })
-  console.log(a)
 }
 
 debug()
