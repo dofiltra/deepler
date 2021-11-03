@@ -41,7 +41,7 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "browser-manager": "^1.0.8",
+    "browser-manager": "^1.0.14",
     "is-running-process": "^1.0.0",
     "proxy-extract": "^1.0.2",
     "time-helpers": "^1.0.0"

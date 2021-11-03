@@ -41,22 +41,21 @@ class Deepler {
       }
     }
 
-    const pwrt: BrowserManager = await BrowserManager.build({
+    const pwrt = await BrowserManager.build<BrowserManager>({
       maxOpenedBrowsers,
       launchOpts: {
         headless: headless !== false,
         proxy
       },
       device: devices['Pixel 5'],
-      lockCloseFirst: 120
+      lockCloseFirst: 300,
+      idleCloseSeconds: 100
     })
     // console.log(await pwrt.checkIp())
-    const page = (await pwrt.newPage({
+    const page = (await pwrt!.newPage({
       url: `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`,
       waitUntil: 'networkidle'
     })) as Page
-
-    pwrt.lockClose(120)
 
     try {
       const el = await page.$('button.lmt__translations_as_text__text_btn')
@@ -115,7 +114,7 @@ class Deepler {
       await sleep(5e3)
 
       await this.type(page, text)
-      const resp = await this.getHandleJobsResult(pwrt, page, text)
+      const resp = await this.getHandleJobsResult(pwrt!, page!, text)
 
       if (resp?.translatedText) {
         await pwrt?.close('from translate 4')
@@ -135,7 +134,7 @@ class Deepler {
   protected async getHandleJobsResult(pwrt: BrowserManager, page: Page, text: string) {
     try {
       const { result } = {
-        ...(await pwrt.getRespResult(page, 'LMT_handle_jobs', text))
+        ...(await pwrt.getRespResult<any>(page, 'LMT_handle_jobs', text))
       } as any
 
       const { source_lang, target_lang, translations = [] } = { ...result } as any
