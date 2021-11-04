@@ -2,7 +2,7 @@ import { BrowserManager, chromium, devices, Page } from 'browser-manager'
 import { ProxyList } from 'proxy-extract'
 import { sleep } from 'time-helpers'
 
-type TDeeplSettings = {
+export type TDeeplSettings = {
   proxy?: ProxyList.IFreeProxy
   headless?: boolean
 }
