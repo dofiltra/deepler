@@ -1,4 +1,4 @@
-import { BrowserManager, chromium, devices, Page } from 'browser-manager'
+import { BrowserManager, devices, Page } from 'browser-manager'
 import { ProxyList } from 'proxy-extract'
 import { sleep } from 'time-helpers'
 
@@ -16,7 +16,7 @@ type TTranslateOpts = {
   tryIndex?: number
 }
 
-class Deepler {
+export class Deepler {
   protected _settings: TDeeplSettings
 
   constructor(s: TDeeplSettings) {
@@ -191,5 +191,3 @@ class Deepler {
     }
   }
 }
-
-export { Deepler }
