@@ -74,14 +74,13 @@ export class DeeplFetch extends DeeplBase {
 
       return data as TTranslateLangResponse
     } catch (e: any) {
-      console.log(e)
-      debugger
+      //
     }
 
     return null
   }
 
-  private async getTranslate(text: string, target_lang: string, source_lang: string) {
+  private async getTranslate(text: string, targetLang: string, sourceLang: string) {
     try {
       const fh = await getFetchHap({
         proxy: this.settings.proxy?.url,
@@ -109,8 +108,8 @@ export class DeeplFetch extends DeeplBase {
             ],
             lang: {
               preference: { weight: {}, default: 'default', formality: null },
-              source_lang_computed: source_lang,
-              target_lang
+              source_lang_computed: sourceLang,
+              target_lang: targetLang
             },
             priority: 1,
             commonJobParams: { regionalVariant: 'en-US', browserType: 1 },
@@ -123,7 +122,9 @@ export class DeeplFetch extends DeeplBase {
       const data = await resp.json()
 
       return data as TTranslateResult
-    } catch {}
+    } catch {
+      //
+    }
 
     return null
   }
