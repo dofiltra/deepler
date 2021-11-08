@@ -1,9 +1,9 @@
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { DeeplBase, TTranslateOpts } from './DeeplBase'
+import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
 
 export class DeeplBrowser extends DeeplBase {
-  async translate(opts: TTranslateOpts): Promise<any> {
+  async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const { text, targetLang, maxOpenedBrowsers = 10, tryIndex = 0, tryLimit = 2 } = opts
 
     if (tryIndex >= tryLimit) {

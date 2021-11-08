@@ -15,6 +15,19 @@ export type TTranslateOpts = {
   tryIndex?: number
 }
 
+export type TTranslateResult = {
+  translatedText: string
+  source_lang?: string
+  target_lang?: string
+}
+
+export type TTranslateLangResponse = {
+  result: {
+    lang: string
+    detectedLanguages: { [lang: string]: number }
+  }
+}
+
 export class DeeplBase {
   protected settings: TDeeplSettings
 
