@@ -5,6 +5,7 @@ import { sleep } from 'time-helpers'
 export type TDeeplSettings = {
   proxy?: ProxyList.IFreeProxy
   headless?: boolean
+  allowBrowser?: boolean
 }
 
 type TTranslateOpts = {
@@ -21,11 +22,16 @@ export class Deepler {
 
   constructor(s: TDeeplSettings) {
     this._settings = {
+      allowBrowser: true,
       ...s
     }
   }
 
   async translate(opts: TTranslateOpts): Promise<any> {
+    return await this.translateBrowser(opts)
+  }
+
+  private async translateBrowser(opts: TTranslateOpts): Promise<any> {
     const { text, targetLang, maxOpenedBrowsers = 10, tryIndex = 0, tryLimit = 2 } = opts
 
     if (tryIndex >= tryLimit) {
