@@ -13,3 +13,7 @@ export class Deepler extends DeeplBase {
     return await new DeeplBrowser(this.settings).translate(opts)
   }
 }
+
+export * from './DeeplBase'
+export * from './DeeplBrowser'
+export * from './DeeplFetch'
