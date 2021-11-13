@@ -6,19 +6,20 @@ let id = 48580010
 export class DeeplFetch extends DeeplBase {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult | null> {
     const { text, targetLang } = opts
-    const { result } = { ...(await this.getLang(text)) }
+    const proxyUrl = (await this.getProxy())?.url
+    const { result } = { ...(await this.getLang(text, proxyUrl)) }
 
     if (!result?.lang) {
       return null
     }
 
-    return await this.getTranslate(text, targetLang, 'RU') // result.lang
+    return await this.getTranslate(text, targetLang, 'RU', proxyUrl) // result.lang
   }
 
-  private async getLang(text: string) {
+  private async getLang(text: string, proxyUrl?: string) {
     try {
       const fh = await getFetchHap({
-        proxy: this.settings.proxy?.url,
+        proxy: proxyUrl,
         timeout: 30e3
       })
       const resp = await fh('https://www2.deepl.com/jsonrpc?method=LMT_split_into_sentences', {
@@ -80,10 +81,10 @@ export class DeeplFetch extends DeeplBase {
     return null
   }
 
-  private async getTranslate(text: string, targetLang: string, sourceLang: string) {
+  private async getTranslate(text: string, targetLang: string, sourceLang: string, proxyUrl?: string) {
     try {
       const fh = await getFetchHap({
-        proxy: this.settings.proxy?.url,
+        proxy: proxyUrl,
         timeout: 30e3
       })
       const resp = await fh('https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs', {

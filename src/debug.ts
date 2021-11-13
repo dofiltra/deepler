@@ -1,4 +1,3 @@
-import { ProxyList } from 'proxy-extract'
 import { Deepler } from '.'
 import { getFetchHap } from './fetch'
 

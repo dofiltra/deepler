@@ -4,18 +4,19 @@ import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
 
 export class DeeplBrowser extends DeeplBase {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
-    const { text, targetLang, maxOpenedBrowsers = 10, tryIndex = 0, tryLimit = 2 } = opts
+    const { text, targetLang, maxOpenedBrowsers = 10, tryIndex = 0, tryLimit = 5 } = opts
 
     if (tryIndex >= tryLimit) {
       return { translatedText: text }
     }
 
     const { headless } = this.settings
-
+    const proxyUrl = (await this.getProxy())?.url
     let proxy
-    if (this.settings.proxy?.url) {
+
+    if (proxyUrl) {
       proxy = {
-        server: this.settings.proxy?.url
+        server: proxyUrl
       }
     }
 
@@ -34,6 +35,14 @@ export class DeeplBrowser extends DeeplBase {
       url: `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`,
       waitUntil: 'networkidle'
     })) as Page
+
+    if (!page) {
+      await sleep((tryIndex + 1) * 1000)
+      return await this.translate({
+        ...opts,
+        tryIndex: tryIndex + 1
+      })
+    }
 
     try {
       const el = await page.$('button.lmt__translations_as_text__text_btn')

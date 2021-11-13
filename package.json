@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/Ty4ka/deepler#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.176",
     "@types/make-fetch-happen": "^9.0.1",
     "@types/node": "^16.11.7",
     "prettier": "^2.4.1",
@@ -44,9 +45,10 @@
   ],
   "dependencies": {
     "browser-manager": "^1.0.14",
+    "dbtempo": "^1.0.2",
     "is-running-process": "^1.0.0",
+    "lodash": "^4.17.21",
     "make-fetch-happen": "^9.1.0",
-    "proxy-extract": "^1.0.3",
     "time-helpers": "^1.0.0"
   }
 }
