@@ -2,7 +2,7 @@ import { LowDbKv } from 'dbtempo'
 import _ from 'lodash'
 
 export type TDeeplSettings = {
-  proxies?: [{ url: string }]
+  proxies?: { url: string }[]
   headless?: boolean
   allowBrowser?: boolean
 }
