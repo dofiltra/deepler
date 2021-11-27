@@ -11,12 +11,14 @@ export class DeeplBrowser extends DeeplBase {
     }
 
     const { headless } = this.settings
-    const proxyUrl = (await this.getProxy())?.url
+    const proxyItem = await this.getProxy()
     let proxy
 
-    if (proxyUrl) {
+    if (proxyItem) {
       proxy = {
-        server: proxyUrl
+        server: `${proxyItem.type}://${proxyItem.ip}:${proxyItem.port}`,
+        username: proxyItem.user,
+        password: proxyItem.pass
       }
     }
 

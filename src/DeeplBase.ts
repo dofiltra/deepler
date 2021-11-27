@@ -1,8 +1,9 @@
 import { LowDbKv } from 'dbtempo'
+import { ProxyItem } from 'dprx-types'
 import _ from 'lodash'
 
 export type TDeeplSettings = {
-  proxies?: { url: string }[]
+  proxies?: ProxyItem[]
   headless?: boolean
   allowBrowser?: boolean
 }

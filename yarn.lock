@@ -314,6 +314,20 @@ diff@^4.0.1:
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
+dotenv@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
+  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+
+dprx-types@^1.0.33:
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/dprx-types/-/dprx-types-1.0.33.tgz#570059d97b57c7b031e4e568f9c50b44ca7a4201"
+  integrity sha512-+2vTy4ewqHMvWEEJE4F3pmIf5ymO4qc/zwIgtJsW2ZZDPgVJzv5PEgN3Z0DqAqFYHC6T0wqeDDzxtVrFEjbUKw==
+  dependencies:
+    dotenv "^10.0.0"
+    esm-requirer "^1.0.3"
+    time-helpers "^1.0.0"
+
 encoding@^0.1.12:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.13.tgz#56574afdd791f54a8e9b2785c0582a2d26210fa9"
