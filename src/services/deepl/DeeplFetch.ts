@@ -1,5 +1,5 @@
 import { DeeplBase, TTranslateLangResponse, TTranslateOpts, TTranslateResult } from './DeeplBase'
-import { getFetchHap } from './fetch'
+import { getFetchHap } from '../../fetch'
 
 let id = 48580010
 

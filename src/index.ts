@@ -1,6 +1,6 @@
-import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
-import { DeeplBrowser } from './DeeplBrowser'
-import { DeeplFetch } from './DeeplFetch'
+import { DeeplBase, TTranslateOpts, TTranslateResult } from './services/deepl/DeeplBase'
+import { DeeplBrowser } from './services/deepl/DeeplBrowser'
+import { DeeplFetch } from './services/deepl/DeeplFetch'
 
 export class Deepler extends DeeplBase {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
@@ -14,6 +14,6 @@ export class Deepler extends DeeplBase {
   }
 }
 
-export * from './DeeplBase'
-export * from './DeeplBrowser'
-export * from './DeeplFetch'
+export * from './services/deepl/DeeplBase'
+export * from './services/deepl/DeeplBrowser'
+export * from './services/deepl/DeeplFetch'
