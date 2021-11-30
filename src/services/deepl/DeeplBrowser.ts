@@ -1,8 +1,20 @@
+import _ from 'lodash'
+import crypto from 'crypto'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
 import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
 
+export type TBrowserInstance = {
+  id: string
+  browser: BrowserManager
+  page: Page
+  idle: boolean
+  usedCount: number
+}
+
 export class DeeplBrowser extends DeeplBase {
+  static instances: TBrowserInstance[] = []
+
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const { text, targetLang, maxOpenedBrowsers = 10, tryIndex = 0, tryLimit = 5 } = opts
 
@@ -11,22 +23,12 @@ export class DeeplBrowser extends DeeplBase {
     }
 
     const { headless } = this.settings
-    const proxyItem = await this.getProxy()
-    let proxy
-
-    if (proxyItem) {
-      proxy = {
-        server: `${proxyItem.type}://${proxyItem.ip}:${proxyItem.port}`,
-        username: proxyItem.user,
-        password: proxyItem.pass
-      }
-    }
 
     const pwrt = await BrowserManager.build<BrowserManager>({
       maxOpenedBrowsers,
       launchOpts: {
         headless: headless !== false,
-        proxy
+        proxy: (await this.getProxy())?.toPwrt
       },
       device: devices['Pixel 5'],
       lockCloseFirst: 300,
@@ -178,5 +180,195 @@ export class DeeplBrowser extends DeeplBase {
     } catch (error) {
       return { error }
     }
+  }
+
+  async translateWithInstance(opts: TTranslateOpts): Promise<TTranslateResult> {
+    const { text, targetLang, tryIndex = 0, tryLimit = 5 } = opts
+
+    if (tryIndex >= tryLimit) {
+      return { translatedText: text }
+    }
+
+    const inst = await this.getInstance()
+    const page = inst?.page
+
+    if (!page) {
+      await sleep((tryIndex + 1) * 1000)
+      this.updateInstance(inst.id, {
+        idle: true
+      })
+      return await this.translateWithInstance({
+        ...opts,
+        tryIndex: tryIndex + 1
+      })
+    }
+
+    try {
+      await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
+        waitUntil: 'networkidle'
+      })
+      const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
+
+      if (resp?.translatedText) {
+        this.updateInstance(inst.id, {
+          idle: true
+        })
+        return resp
+      }
+
+      await sleep(2e3)
+      const el = await page.$('button.lmt__translations_as_text__text_btn')
+      if (el) {
+        const translatedText = await el.innerText()
+
+        if (translatedText) {
+          let hash = page.url().split('#')[1]
+
+          if (!hash) {
+            await this.type(
+              page,
+              text
+                .split(' ')
+                .filter((x) => x?.trim())
+                .slice(0, 10)
+                .join(' ')
+            )
+
+            try {
+              await page.waitForURL((url: URL) => !!url.hash, {
+                timeout: 5e3
+              })
+            } catch (e: any) {
+              // console.log(e)
+            }
+            hash = page.url().split('#')[1]
+          }
+
+          if (hash) {
+            const langs = hash.split('/')
+            if (langs.length === 3) {
+              return {
+                translatedText,
+                source_lang: langs[0]?.toUpperCase(),
+                target_lang: langs[1]?.toUpperCase()
+              }
+            }
+          }
+
+          this.updateInstance(inst.id, {
+            idle: true
+          })
+          return { translatedText }
+        }
+      }
+    } catch {
+      // log
+    }
+
+    try {
+      await this.type(page, text.slice(0, 10))
+      if (page.url().indexOf(targetLang) === -1) {
+        await this.switchTargetLang(page, targetLang)
+      }
+      await sleep(5e3)
+
+      await this.type(page, text)
+      const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
+
+      if (resp?.translatedText) {
+        this.updateInstance(inst.id, {
+          idle: true
+        })
+        return resp
+      }
+    } catch (e: any) {
+      //   console.log(e)
+    }
+
+    this.updateInstance(inst.id, {
+      idle: true
+    })
+
+    return await this.translateWithInstance({
+      ...opts,
+      tryIndex: tryIndex + 1
+    })
+  }
+
+  async checkLiveInstance() {
+    DeeplBrowser.instances = (
+      await Promise.all(
+        DeeplBrowser.instances.map(async (inst) => {
+          try {
+            const isLive = !!(await inst.browser.isLive())
+            if (isLive) {
+              return inst
+            }
+            await inst.browser.close()
+          } catch {
+            //
+          }
+          return null
+        })
+      )
+    ).filter((inst) => inst) as TBrowserInstance[]
+  }
+
+  async createInstances() {
+    const { headless, maxInstanceCount = 1, instanceLiveMinutes = 10 } = this.settings
+    const newInstancesCount = maxInstanceCount - DeeplBrowser.instances.length
+    const instanceLiveMs = instanceLiveMinutes * 60 * 1000
+
+    for (let i = 0; i < newInstancesCount; i++) {
+      const browser = await BrowserManager.build<BrowserManager>({
+        maxOpenedBrowsers: maxInstanceCount,
+        launchOpts: {
+          headless: headless !== false,
+          proxy: (await this.getProxy())?.toPwrt
+        },
+        device: devices['Pixel 5'],
+        lockCloseFirst: instanceLiveMs,
+        idleCloseSeconds: instanceLiveMs
+      })
+      const page = (await browser!.newPage({
+        url: `https://www.deepl.com/translator`,
+        waitUntil: 'networkidle'
+      })) as Page
+
+      if (!browser || !page) {
+        continue
+      }
+
+      DeeplBrowser.instances.push({
+        id: crypto.randomBytes(16).toString('hex'),
+        idle: true,
+        usedCount: 0,
+        browser,
+        page
+      })
+    }
+  }
+
+  async getInstance(): Promise<TBrowserInstance> {
+    await this.checkLiveInstance()
+    await this.createInstances()
+
+    const inst = DeeplBrowser.instances.sort((a, b) => (b.usedCount > a.usedCount ? 1 : -1)).find((i) => i.idle)
+
+    if (inst) {
+      this.updateInstance(inst.id, {
+        idle: false,
+        usedCount: inst.usedCount + 1
+      })
+      return inst
+    }
+
+    await sleep(_.random(1e3, 5e3))
+    return await this.getInstance()
+  }
+
+  private updateInstance(id: string, upd: any) {
+    const index = DeeplBrowser.instances.findIndex((i) => i.id === id)
+    DeeplBrowser.instances[index] = { ...DeeplBrowser.instances[index], ...upd }
   }
 }

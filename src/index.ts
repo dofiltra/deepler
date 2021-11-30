@@ -10,7 +10,7 @@ export class Deepler extends DeeplBase {
     //   return result
     // }
 
-    return await new DeeplBrowser(this.settings).translate(opts)
+    return await new DeeplBrowser(this.settings).translateWithInstance(opts)
   }
 }
 

@@ -6,6 +6,8 @@ export type TDeeplSettings = {
   proxies?: ProxyItem[]
   headless?: boolean
   allowBrowser?: boolean
+  maxInstanceCount?: number
+  instanceLiveMinutes?: number
 }
 
 export type TTranslateOpts = {
