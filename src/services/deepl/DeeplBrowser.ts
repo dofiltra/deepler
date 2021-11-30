@@ -148,6 +148,13 @@ export class DeeplBrowser extends DeeplBase {
         })
         await sleep(1e3)
 
+        const isPauseProxy = await this.isPauseProxy(page)
+        if (isPauseProxy) {
+          await this.incProxy(inst.proxyItem?.url, this.limitProxyCount)
+          await this.closeInstance(inst.id)
+          return resolve(null)
+        }
+
         await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
           waitUntil: 'networkidle'
         })
@@ -234,6 +241,13 @@ export class DeeplBrowser extends DeeplBase {
     }
 
     return result
+  }
+  protected async isPauseProxy(page: Page) {
+    try {
+      const hasBlockedContent = await page.$('.lmt__notification__blocked')
+      return hasBlockedContent
+    } catch {}
+    return false
   }
 
   protected async getHandleJobsResult(pwrt: BrowserManager, page: Page, text: string) {
@@ -383,5 +397,10 @@ export class DeeplBrowser extends DeeplBase {
   protected updateInstance(id: string, upd: any) {
     const index = DeeplBrowser.instances.findIndex((i) => i.id === id)
     DeeplBrowser.instances[index] = { ...DeeplBrowser.instances[index], ...upd }
+  }
+
+  protected async closeInstance(id: string) {
+    const index = DeeplBrowser.instances.findIndex((i) => i.id === id)
+    await DeeplBrowser.instances[index]?.browser.close()
   }
 }

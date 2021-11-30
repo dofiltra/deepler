@@ -70,11 +70,11 @@ export class DeeplBase {
     return
   }
 
-  async incProxy(proxyUrl?: string) {
+  async incProxy(proxyUrl?: string, inc = 1) {
     if (!proxyUrl) {
       return
     }
     const { result = 0 } = await this.proxyDb.get(proxyUrl)
-    this.proxyDb.add({ [proxyUrl]: result + 1 })
+    this.proxyDb.add({ [proxyUrl]: result + inc })
   }
 }
