@@ -244,7 +244,7 @@ export class DeeplBrowser extends DeeplBase {
   }
   protected async isPauseProxy(page: Page) {
     try {
-      const hasBlockedContent = !!await page.$('.lmt__notification__blocked')
+      const hasBlockedContent = !!(await page.$('.lmt__notification__blocked'))
       return hasBlockedContent
     } catch {
       //
