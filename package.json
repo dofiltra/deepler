@@ -44,7 +44,7 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "browser-manager": "^1.1.16",
+    "browser-manager": "^1.1.17",
     "dbtempo": "^1.0.6",
     "dprx-types": "^1.0.34",
     "is-running-process": "^1.0.0",

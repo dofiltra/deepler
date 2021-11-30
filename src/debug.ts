@@ -62,6 +62,7 @@ const debug = async () => {
       return { translateResult, text: t }
     })
   )
+  // debugger
   // console.log(a)
 }
 

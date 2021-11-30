@@ -158,10 +158,10 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
-browser-manager@^1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/browser-manager/-/browser-manager-1.1.16.tgz#4200a64e4be120680688a8cca1a40a8d78377038"
-  integrity sha512-2IkqOB2ucc5xtOeUl8Q+1NccTSJHC+8pPAgPRskbzi0BgQF5x6rMmL3ax3UZUSiwdUCD7VxvhlR3IIGe1GSL6A==
+browser-manager@^1.1.17:
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/browser-manager/-/browser-manager-1.1.17.tgz#242ab53bd2e40fe1a6f3d552b0c99f376613903c"
+  integrity sha512-gF02L3xAz+/jdB6OztC7r72H8P6usqQMzfakpMp8DU7if6K1mSa5J/CMY+TV0mqkfZYV2h4FHwXdIMCVNvQORA==
   dependencies:
     is-running-process "^1.0.0"
     lodash "^4.17.21"

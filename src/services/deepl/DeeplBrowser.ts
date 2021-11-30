@@ -242,6 +242,7 @@ export class DeeplBrowser extends DeeplBase {
 
     return result
   }
+
   protected async isPauseProxy(page: Page) {
     try {
       const hasBlockedContent = !!(await page.$('.lmt__notification__blocked'))
@@ -358,7 +359,10 @@ export class DeeplBrowser extends DeeplBase {
       })
       const page = (await browser!.newPage({
         url: `https://www.deepl.com/translator`,
-        waitUntil: 'networkidle'
+        waitUntil: 'networkidle',
+        blackList: {
+          resourceTypes: ['stylesheet', 'image']
+        }
       })) as Page
 
       if (!browser || !page) {
