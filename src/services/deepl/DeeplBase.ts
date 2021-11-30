@@ -7,6 +7,7 @@ export type TDeeplSettings = {
   headless?: boolean
   allowBrowser?: boolean
   maxInstanceCount?: number
+  maxInstanceUse?: number
   instanceLiveMinutes?: number
 }
 

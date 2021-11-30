@@ -281,7 +281,8 @@ export class DeeplBrowser extends DeeplBase {
     })
 
     this.updateInstance(inst.id, {
-      idle: true
+      idle: true,
+      usedCount: inst.usedCount + 1
     })
 
     if (!result) {
@@ -295,12 +296,14 @@ export class DeeplBrowser extends DeeplBase {
   }
 
   async checkLiveInstance() {
+    const { maxInstanceUse = 100 } = this.settings
+
     DeeplBrowser.instances = (
       await Promise.all(
         DeeplBrowser.instances.map(async (inst) => {
           try {
             const isLive = !!(await inst.browser.isLive())
-            if (isLive) {
+            if (isLive && inst.usedCount < maxInstanceUse) {
               return inst
             }
             await inst.browser.close()
