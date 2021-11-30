@@ -43,6 +43,9 @@ export class DeeplBase {
   constructor(s: TDeeplSettings) {
     this.settings = {
       allowBrowser: true,
+      instanceLiveMinutes: 15,
+      maxInstanceCount: 3,
+      maxInstanceUse: 100,
       ...s
     }
   }

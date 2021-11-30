@@ -15,6 +15,7 @@ export type TBrowserInstance = {
 }
 
 export class DeeplBrowser extends DeeplBase {
+  private static creatingInstances = false
   static instances: TBrowserInstance[] = []
 
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
@@ -201,12 +202,12 @@ export class DeeplBrowser extends DeeplBase {
         return resolve(null)
       }
 
-      await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
-        waitUntil: 'networkidle'
-      })
-      await sleep(1e3)
-
       try {
+        await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
+          waitUntil: 'networkidle'
+        })
+        await sleep(1e3)
+
         await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
           waitUntil: 'networkidle'
         })
@@ -316,7 +317,13 @@ export class DeeplBrowser extends DeeplBase {
     ).filter((inst) => inst) as TBrowserInstance[]
   }
 
-  async createInstances() {
+  async createInstances(): Promise<void> {
+    if (DeeplBrowser.creatingInstances) {
+      await sleep(_.random(1e3, 5e3))
+      return await this.createInstances()
+    }
+
+    DeeplBrowser.creatingInstances = true
     const { headless, maxInstanceCount = 1, instanceLiveMinutes = 10 } = this.settings
     const newInstancesCount = maxInstanceCount - DeeplBrowser.instances.length
     const instanceLiveMs = instanceLiveMinutes * 60 * 1000
@@ -351,6 +358,8 @@ export class DeeplBrowser extends DeeplBase {
         proxyItem
       })
     }
+
+    DeeplBrowser.creatingInstances = false
   }
 
   async getInstance(): Promise<TBrowserInstance> {
