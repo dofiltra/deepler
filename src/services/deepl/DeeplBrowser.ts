@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
 import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
+import { ProxyItem } from 'dprx-types'
 
 export type TBrowserInstance = {
   id: string
@@ -10,6 +11,7 @@ export type TBrowserInstance = {
   page: Page
   idle: boolean
   usedCount: number
+  proxyItem?: ProxyItem
 }
 
 export class DeeplBrowser extends DeeplBase {
@@ -191,108 +193,105 @@ export class DeeplBrowser extends DeeplBase {
 
     const inst = await this.getInstance()
     const page = inst?.page
+    this.incProxy(inst.proxyItem?.url)
 
-    if (!page) {
-      await sleep((tryIndex + 1) * 1000)
-      this.updateInstance(inst.id, {
-        idle: true
+    const result: TTranslateResult | null = await new Promise(async (resolve) => {
+      if (!page) {
+        await sleep((tryIndex + 1) * 1000)
+        return resolve(null)
+      }
+
+      await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
+        waitUntil: 'networkidle'
       })
+      await sleep(1e3)
+
+      try {
+        await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
+          waitUntil: 'networkidle'
+        })
+        const resp = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim())
+
+        if (resp?.translatedText) {
+          return resolve(resp)
+        }
+
+        const el = await page.$('button.lmt__translations_as_text__text_btn')
+        if (el) {
+          const translatedText = await el.innerText()
+
+          if (translatedText) {
+            let hash = page.url().split('#')[1]
+
+            if (!hash) {
+              await this.type(
+                page,
+                text
+                  .split(' ')
+                  .filter((x) => x?.trim())
+                  .slice(0, 10)
+                  .join(' ')
+              )
+
+              try {
+                await page.waitForURL((url: URL) => !!url.hash, {
+                  timeout: 5e3
+                })
+              } catch (e: any) {
+                // console.log(e)
+              }
+              hash = page.url().split('#')[1]
+            }
+
+            if (hash) {
+              const langs = hash.split('/')
+              if (langs.length === 3) {
+                return resolve({
+                  translatedText,
+                  source_lang: langs[0]?.toUpperCase(),
+                  target_lang: langs[1]?.toUpperCase()
+                })
+              }
+            }
+
+            return resolve({ translatedText })
+          }
+        }
+      } catch {
+        // log
+      }
+
+      try {
+        await this.type(page, text.slice(0, 10))
+        if (!page.url().includes(targetLang)) {
+          await this.switchTargetLang(page, targetLang)
+        }
+        await sleep(5e3)
+        await this.type(page, text)
+        const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
+
+        if (resp?.translatedText) {
+          return resolve(resp)
+        }
+      } catch (e: any) {
+        //   console.log(e)
+      }
+
+      return resolve(null)
+    })
+
+    this.updateInstance(inst.id, {
+      idle: true
+    })
+
+    if (!result) {
       return await this.translateWithInstance({
         ...opts,
         tryIndex: tryIndex + 1
       })
     }
 
-    try {
-      await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
-        waitUntil: 'networkidle'
-      })
-      const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
-
-      if (resp?.translatedText) {
-        this.updateInstance(inst.id, {
-          idle: true
-        })
-        return resp
-      }
-
-      await sleep(2e3)
-      const el = await page.$('button.lmt__translations_as_text__text_btn')
-      if (el) {
-        const translatedText = await el.innerText()
-
-        if (translatedText) {
-          let hash = page.url().split('#')[1]
-
-          if (!hash) {
-            await this.type(
-              page,
-              text
-                .split(' ')
-                .filter((x) => x?.trim())
-                .slice(0, 10)
-                .join(' ')
-            )
-
-            try {
-              await page.waitForURL((url: URL) => !!url.hash, {
-                timeout: 5e3
-              })
-            } catch (e: any) {
-              // console.log(e)
-            }
-            hash = page.url().split('#')[1]
-          }
-
-          if (hash) {
-            const langs = hash.split('/')
-            if (langs.length === 3) {
-              return {
-                translatedText,
-                source_lang: langs[0]?.toUpperCase(),
-                target_lang: langs[1]?.toUpperCase()
-              }
-            }
-          }
-
-          this.updateInstance(inst.id, {
-            idle: true
-          })
-          return { translatedText }
-        }
-      }
-    } catch {
-      // log
-    }
-
-    try {
-      await this.type(page, text.slice(0, 10))
-      if (page.url().indexOf(targetLang) === -1) {
-        await this.switchTargetLang(page, targetLang)
-      }
-      await sleep(5e3)
-
-      await this.type(page, text)
-      const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
-
-      if (resp?.translatedText) {
-        this.updateInstance(inst.id, {
-          idle: true
-        })
-        return resp
-      }
-    } catch (e: any) {
-      //   console.log(e)
-    }
-
-    this.updateInstance(inst.id, {
-      idle: true
-    })
-
-    return await this.translateWithInstance({
-      ...opts,
-      tryIndex: tryIndex + 1
-    })
+    return result
   }
 
   async checkLiveInstance() {
@@ -320,11 +319,12 @@ export class DeeplBrowser extends DeeplBase {
     const instanceLiveMs = instanceLiveMinutes * 60 * 1000
 
     for (let i = 0; i < newInstancesCount; i++) {
+      const proxyItem = await this.getProxy()
       const browser = await BrowserManager.build<BrowserManager>({
         maxOpenedBrowsers: maxInstanceCount,
         launchOpts: {
           headless: headless !== false,
-          proxy: (await this.getProxy())?.toPwrt
+          proxy: proxyItem?.toPwrt
         },
         device: devices['Pixel 5'],
         lockCloseFirst: instanceLiveMs,
@@ -344,7 +344,8 @@ export class DeeplBrowser extends DeeplBase {
         idle: true,
         usedCount: 0,
         browser,
-        page
+        page,
+        proxyItem
       })
     }
   }
@@ -353,7 +354,7 @@ export class DeeplBrowser extends DeeplBase {
     await this.checkLiveInstance()
     await this.createInstances()
 
-    const inst = DeeplBrowser.instances.sort((a, b) => (b.usedCount > a.usedCount ? 1 : -1)).find((i) => i.idle)
+    const inst = DeeplBrowser.instances.sort((a, b) => a.usedCount - b.usedCount).find((i) => i.idle)
 
     if (inst) {
       this.updateInstance(inst.id, {

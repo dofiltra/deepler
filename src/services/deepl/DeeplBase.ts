@@ -35,6 +35,9 @@ export type TTranslateLangResponse = {
 export class DeeplBase {
   protected settings: TDeeplSettings
   protected limitProxyCount = 1000
+  protected proxyDb = new LowDbKv({
+    dbName: `proxy-deepl-{YYYY}-{MM}-{DD}.json`
+  })
 
   constructor(s: TDeeplSettings) {
     this.settings = {
@@ -45,19 +48,29 @@ export class DeeplBase {
 
   async getProxy() {
     const { proxies = [] } = this.settings
-    const db = new LowDbKv({
-      dbName: `proxy-deepl-{YYYY}-{MM}-{DD}.json`
+
+    const proxiesData = (await this.proxyDb.getData()) || {}
+    const sortProxies = proxies.sort((a, b) => {
+      const aVal = proxiesData[a.url] || 0
+      const bVal = proxiesData[b.url] || 0
+
+      return aVal - bVal
     })
 
-    for (const proxy of _.shuffle(proxies)) {
-      let { result = 0 } = await db.get(proxy.url)
-      if (result >= this.limitProxyCount) {
-        continue
-      }
-      db.add({ [proxy.url]: ++result })
-      return proxy
+    const selectedProxy = sortProxies[0]
+    if (selectedProxy) {
+      this.incProxy(selectedProxy.url)
+      return selectedProxy
     }
 
-    return null
+    return
+  }
+
+  async incProxy(proxyUrl?: string) {
+    if (!proxyUrl) {
+      return
+    }
+    const { result = 0 } = await this.proxyDb.get(proxyUrl)
+    this.proxyDb.add({ [proxyUrl]: result + 1 })
   }
 }

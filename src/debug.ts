@@ -53,7 +53,7 @@ const debug = async () => {
 
   for (const t of texts) {
     const a = await new Deepler({
-      instanceLiveMinutes: 5,
+      instanceLiveMinutes: 1,
       maxInstanceCount: 1,
       headless: false
     }).translate({
@@ -61,7 +61,7 @@ const debug = async () => {
       targetLang: 'EN',
       tryLimit: 10
     })
-    console.log(a)
+    console.log('\n', t, a)
   }
 }
 
