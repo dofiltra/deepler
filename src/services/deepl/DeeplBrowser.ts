@@ -246,7 +246,9 @@ export class DeeplBrowser extends DeeplBase {
     try {
       const hasBlockedContent = await page.$('.lmt__notification__blocked')
       return hasBlockedContent
-    } catch {}
+    } catch {
+      //
+    }
     return false
   }
 
