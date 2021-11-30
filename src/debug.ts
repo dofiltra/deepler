@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 import { Deepler } from '.'
 import { getFetchHap } from './fetch'
 
