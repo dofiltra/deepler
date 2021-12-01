@@ -11,6 +11,17 @@ export type TTransSettings = {
   instanceLiveMinutes?: number
 }
 
+export enum TransPrior {
+  DeBro = 'debro',
+  DeApi = 'deapi',
+
+  YaBro = 'yabro',
+  YaApi = 'yaapi',
+
+  GoBro = 'gobro',
+  GoApi = 'goapi'
+}
+
 export type TTranslateOpts = {
   text: string
   targetLang: string

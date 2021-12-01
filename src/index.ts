@@ -1,16 +1,16 @@
-import { TransBase, TTranslateOpts, TTranslateResult } from './services/base/TransBase'
+import { TransBase, TransPrior, TTranslateOpts, TTranslateResult } from './services/base/TransBase'
 import { DeeplBrowser } from './services/deepl/DeeplBrowser'
 import { GTransApi } from './services/gtrans/api'
 
 export class Deepler extends TransBase {
   async translate(
     opts: TTranslateOpts,
-    prior: ('deeplbro' | 'gapi' | 'yabro')[] = ['deeplbro', 'yabro', 'gapi']
+    priors: TransPrior[] = [TransPrior.DeBro, TransPrior.YaBro, TransPrior.GoApi]
   ): Promise<TTranslateResult> {
     let result
 
-    for (const priorName of prior) {
-      if (priorName === 'deeplbro') {
+    for (const prior of priors) {
+      if (prior === TransPrior.DeBro) {
         result = await new DeeplBrowser(this.settings).translateWithInstance(opts)
         if (result?.translatedText) {
           return result
@@ -18,7 +18,7 @@ export class Deepler extends TransBase {
         continue
       }
 
-      if (priorName === 'gapi') {
+      if (prior === TransPrior.GoApi) {
         result = await new GTransApi(this.settings).translate(opts)
         if (result?.translatedText) {
           return result
@@ -26,7 +26,7 @@ export class Deepler extends TransBase {
         continue
       }
 
-      if (priorName === 'yabro') {
+      if (prior === TransPrior.YaBro) {
         continue
       }
     }
