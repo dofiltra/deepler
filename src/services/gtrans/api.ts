@@ -26,7 +26,7 @@ export class GTransApi extends TransBase {
         const proxyTunnel = {
           host: proxy.ip,
           proxyAuth: `${proxy.user}:${proxy.pass}`,
-          port: parseInt(proxy.port!),
+          port: parseInt(proxy.port!, 10),
           headers: {
             'User-Agent': 'Node'
           }

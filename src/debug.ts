@@ -79,7 +79,6 @@ const debug = async () => {
       })
     )
   )
-  debugger
 
   const gTranslateResult = await Promise.all(
     ruTexts.map(async (t) =>
