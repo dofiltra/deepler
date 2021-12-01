@@ -59,9 +59,9 @@ const debug = async () => {
   //       type: 'socks5',
   //       ip: '',
   //       port: '11018',
-  //       user: 'menemty7896',
-  //       pass: 'f1b738',
-  //       changeUrl: 'http://node-us-6.astroproxy.com:11017/api/changeIP?apiToken=a28fb0a84ef7f580'
+  //       user: '',
+  //       pass: '',
+  //       changeUrl: 'http://node-us-6.astroproxy.com:11017/api/changeIP?apiToken='
   //     } as ProxyItem)
   //   ]
   // }).translate({
