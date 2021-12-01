@@ -1,5 +1,6 @@
 /* tslint:disable:no-console */
-import { Deepler } from '.'
+import { ProxyItem } from 'dprx-types'
+import { Deepler, DeeplFetch } from '.'
 import { getFetchHap } from './fetch'
 
 const debug = async () => {
@@ -43,6 +44,23 @@ const debug = async () => {
 `
   ]
 
+  // const fetchResult = await new DeeplFetch({
+  //   headless: false,
+  //   proxies: [
+  //     new ProxyItem({
+  //       type: 'socks5',
+  //       ip: '64.42.177.123',
+  //       port: '11018',
+  //       user: 'menemty7896',
+  //       pass: 'f1b738',
+  //       changeUrl: 'http://node-us-6.astroproxy.com:11017/api/changeIP?apiToken=a28fb0a84ef7f580'
+  //     } as ProxyItem)
+  //   ]
+  // }).translate({
+  //   targetLang: 'EN',
+  //   text: texts[0]
+  // })
+  // debugger
   // console.log(texts.length)
 
   const a = await Promise.all(

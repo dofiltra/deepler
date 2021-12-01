@@ -148,6 +148,7 @@ export class DeeplBrowser extends DeeplBase {
         })
         await sleep(1e3)
 
+        // page.request.
         const isPauseProxy = await this.isPauseProxy(page)
         if (isPauseProxy) {
           await this.incProxy(inst.proxyItem?.url, this.limitProxyCount)
@@ -337,7 +338,8 @@ export class DeeplBrowser extends DeeplBase {
   protected async createInstances(): Promise<void> {
     if (DeeplBrowser.creatingInstances) {
       await sleep(_.random(1e3, 5e3))
-      return await this.createInstances()
+      return
+      // return await this.createInstances()
     }
 
     DeeplBrowser.creatingInstances = true
