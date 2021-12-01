@@ -51,13 +51,13 @@ const debug = async () => {
       })
     )
   )
-  debugger
+  // debugger
   // const fetchResult = await new DeeplFetch({
   //   headless: false,
   //   proxies: [
   //     new ProxyItem({
   //       type: 'socks5',
-  //       ip: '64.42.177.123',
+  //       ip: '',
   //       port: '11018',
   //       user: 'menemty7896',
   //       pass: 'f1b738',
@@ -68,7 +68,6 @@ const debug = async () => {
   //   targetLang: 'EN',
   //   text: texts[0]
   // })
-  debugger
   // console.log(texts.length)
 
   const a = await Promise.all(
