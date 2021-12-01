@@ -238,7 +238,7 @@ export class DeeplBrowser extends TransBase {
     DeeplBrowser.creatingInstances = true
     const { headless, maxInstanceCount = 1, instanceLiveMinutes = 10 } = this.settings
     const newInstancesCount = maxInstanceCount - DeeplBrowser.instances.length
-    const instanceLiveMs = instanceLiveMinutes * 60 * 1000
+    const instanceLiveSec = instanceLiveMinutes * 60
 
     for (let i = 0; i < newInstancesCount; i++) {
       const proxyItem = await this.getProxy()
@@ -249,8 +249,8 @@ export class DeeplBrowser extends TransBase {
           proxy: proxyItem?.toPwrt
         },
         device: devices['Pixel 5'],
-        lockCloseFirst: instanceLiveMs,
-        idleCloseSeconds: instanceLiveMs
+        lockCloseFirst: instanceLiveSec,
+        idleCloseSeconds: instanceLiveSec
       })
       const page = (await browser!.newPage({
         url: `https://www.deepl.com/translator`,
