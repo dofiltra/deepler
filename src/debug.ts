@@ -1,9 +1,6 @@
 /* tslint:disable:no-console */
-import { ProxyItem } from 'dprx-types'
-import { Deepler, DeeplFetch } from '.'
-import { getFetchHap } from './fetch'
-import translate from 'translate-google'
-import { sleep } from 'time-helpers'
+import { Deepler } from '.'
+import { GTransApi } from './services/gtrans/api'
 
 const debug = async () => {
   const texts = [
@@ -46,7 +43,14 @@ const debug = async () => {
 `
   ]
 
-  const gTranslateResult = await Promise.all(texts.map(async (t) => await translate(t, { to: 'en' })))
+  const gTranslateResult = await Promise.all(
+    texts.map(async (t) =>
+      new GTransApi().translate({
+        targetLang: 'EN',
+        text: t
+      })
+    )
+  )
   debugger
   // const fetchResult = await new DeeplFetch({
   //   headless: false,
