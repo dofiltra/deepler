@@ -2,6 +2,8 @@
 import { ProxyItem } from 'dprx-types'
 import { Deepler, DeeplFetch } from '.'
 import { getFetchHap } from './fetch'
+import translate from 'translate-google'
+import { sleep } from 'time-helpers'
 
 const debug = async () => {
   const texts = [
@@ -44,6 +46,8 @@ const debug = async () => {
 `
   ]
 
+  const gTranslateResult = await Promise.all(texts.map(async (t) => await translate(t, { to: 'en' })))
+  debugger
   // const fetchResult = await new DeeplFetch({
   //   headless: false,
   //   proxies: [
@@ -60,7 +64,7 @@ const debug = async () => {
   //   targetLang: 'EN',
   //   text: texts[0]
   // })
-  // debugger
+  debugger
   // console.log(texts.length)
 
   const a = await Promise.all(
