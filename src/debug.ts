@@ -73,7 +73,7 @@ const debug = async () => {
 
   const gTranslateResultEn = await Promise.all(
     enTexts.map(async (t) =>
-      new GTransApi().translate({
+      new GTransApi({}).translate({
         targetLang: 'RU',
         text: t
       })
@@ -83,7 +83,7 @@ const debug = async () => {
 
   const gTranslateResult = await Promise.all(
     ruTexts.map(async (t) =>
-      new GTransApi().translate({
+      new GTransApi({}).translate({
         targetLang: 'EN',
         text: t
       })

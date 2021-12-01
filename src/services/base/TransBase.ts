@@ -2,7 +2,7 @@ import { LowDbKv } from 'dbtempo'
 import { ProxyItem } from 'dprx-types'
 import _ from 'lodash'
 
-export type TDeeplSettings = {
+export type TTransSettings = {
   proxies?: ProxyItem[]
   headless?: boolean
   allowBrowser?: boolean
@@ -33,14 +33,14 @@ export type TTranslateLangResponse = {
   }
 }
 
-export class DeeplBase {
-  protected settings: TDeeplSettings
+export class TransBase {
+  protected settings: TTransSettings
   protected limitProxyCount = 1000
   protected proxyDb = new LowDbKv({
     dbName: `proxy-deepl-{YYYY}-{MM}-{DD}.json`
   })
 
-  constructor(s: TDeeplSettings) {
+  constructor(s: TTransSettings) {
     this.settings = {
       allowBrowser: true,
       instanceLiveMinutes: 15,

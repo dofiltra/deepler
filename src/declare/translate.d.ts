@@ -1,1 +1,3 @@
 declare module 'translate-google'
+
+

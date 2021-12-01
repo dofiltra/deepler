@@ -2,7 +2,7 @@ import _ from 'lodash'
 import crypto from 'crypto'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { DeeplBase, TTranslateOpts, TTranslateResult } from './DeeplBase'
+import { TransBase, TTranslateOpts, TTranslateResult } from '../base/TransBase'
 import { ProxyItem } from 'dprx-types'
 
 export type TBrowserInstance = {
@@ -14,7 +14,7 @@ export type TBrowserInstance = {
   proxyItem?: ProxyItem
 }
 
-export class DeeplBrowser extends DeeplBase {
+export class DeeplBrowser extends TransBase {
   private static creatingInstances = false
   static instances: TBrowserInstance[] = []
 

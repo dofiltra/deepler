@@ -1,9 +1,9 @@
-import { DeeplBase, TTranslateLangResponse, TTranslateOpts, TTranslateResult } from './DeeplBase'
+import { TransBase, TTranslateLangResponse, TTranslateOpts, TTranslateResult } from '../base/TransBase'
 import { getFetchHap } from '../../fetch'
 
 let id = 48580010
 
-export class DeeplFetch extends DeeplBase {
+export class DeeplFetch extends TransBase {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult | null> {
     const { text, targetLang } = opts
     const proxyUrl = (await this.getProxy())?.url
