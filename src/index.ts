@@ -1,5 +1,5 @@
 import { TransBase, TransPrior, TTranslateOpts, TTranslateResult } from './services/base/TransBase'
-import { DeeplBrowser } from './services/deepl/DeeplBrowser'
+import { DeeplBrowser } from './services/detrans/bro'
 import { GTransApi } from './services/gtrans/api'
 
 export class Deepler extends TransBase {
@@ -36,5 +36,5 @@ export class Deepler extends TransBase {
 }
 
 export * from './services/base/TransBase'
-export * from './services/deepl/DeeplBrowser'
+export * from './services/detrans/bro'
 export * from './services/gtrans/api'
