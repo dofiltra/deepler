@@ -3,7 +3,7 @@ import { Deepler } from '.'
 import { GTransApi } from './services/gtrans/api'
 
 const debug = async () => {
-  const texts = [
+  const ruTexts = [
     `Генеральный секретарь НАТО Йенс Столтенберг также повторил свой призыв к России провести «деэскалацию» наращивания военной мощи у границы с Украиной и предупредил о «последствиях» в случае применения силы.`,
 
     `Заявления Столтенберга и главы Европейской комиссии Урсулы фон дер Ляйен прозвучали накануне встречи министров иностранных дел стран НАТО, включая госсекретаря США Энтони Блинкена, которая пройдет в Латвии на этой неделе.  `,
@@ -43,8 +43,46 @@ const debug = async () => {
 `
   ]
 
+  const enTexts = [
+    ...`As of Wednesday, 152 personnel from the Santa Clarita Valley Sheriff’s Station will be wearing body cameras, with plans to get the remaining few dozen equipped with video equipment by the end of the month.  
+
+  The plan, according to law enforcement officials, is to have more than 200 sworn personnel wearing body cameras by Dec. 9, and the public will be able to request the video through the Los Angeles County Sheriff’s Department’s Public Records Act request process.  
+  
+  The cameras are set to be on at all times. However, they only begin recording upon a deputy activating a camera per department policy.  
+  
+  According to Deputy Natalie Arriaga, a spokeswoman for the SCV Sheriff’s Station, deputies began wearing cameras Thanksgiving night after a number of years of the county working to get the program off the ground.  
+  
+  “In preparation for the opening of the new station on Nov. 18, 2021, the department began training station personnel early,” said Lt. Geoffrey Chadwick of the L.A. County Sheriff’s Department Body Worn Camera Unit. “The first shift the body-worn cameras were active was on Nov. 25, 2021.  
+  
+  “The reason for the one-week delay was due to the installation of the network required for the cameras to dock and upload their videos,” he added.  
+  
+  According to Chadwick, each deputy is issued a body-worn camera after attending an eight-hour training class focused on the department’s policies regarding use and accountability. The cameras, upon completion of the class, should be worn on the deputy’s very next shift.  
+  
+  “The cameras are currently active and being used by Santa Clarita Station,” said Chadwick. “We expect full deployment by Dec. 9, 2021, with the exception of personnel off due to approved leave or for vacant positions.” 
+  
+  The cameras, Chadwick said, are to be used for all duties including enforcement or investigation, and should be on at all times. The camera recording will be left to the deputy’s discretion and department policy.  
+  
+  “However, each camera has a buffer mode of 60 seconds, which is added at the beginning of each recording upon activation,” said Chadwick. “At the end of each shift, the employee will dock their cameras to upload their videos into a digital evidence management system.” 
+  
+  “If the cameras are not activated per policy, the station will take action to correct the behavior to include counseling, documentation and potentially discipline,” he said.  
+  
+  The department has said in the past, and Chadwick reiterated on Tuesday, they believe the body-worn camera program will allow deputies and the department an opportunity to review their “performance following critical incidents, reduce force and complaints, reduce allegations of misconduct, showcase exemplary work, and provide additional evidence in criminal matters.” 
+  
+  `.split('\n')
+  ]
+
+  const gTranslateResultEn = await Promise.all(
+    enTexts.map(async (t) =>
+      new GTransApi().translate({
+        targetLang: 'RU',
+        text: t
+      })
+    )
+  )
+  debugger
+
   const gTranslateResult = await Promise.all(
-    texts.map(async (t) =>
+    ruTexts.map(async (t) =>
       new GTransApi().translate({
         targetLang: 'EN',
         text: t
@@ -71,7 +109,7 @@ const debug = async () => {
   // console.log(texts.length)
 
   const a = await Promise.all(
-    texts.map(async (t) => {
+    ruTexts.map(async (t) => {
       const translateResult = await new Deepler({
         maxInstanceCount: 1,
         maxInstanceUse: 3,

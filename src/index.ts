@@ -1,17 +1,16 @@
 import { DeeplBase, TTranslateOpts, TTranslateResult } from './services/deepl/DeeplBase'
 import { DeeplBrowser } from './services/deepl/DeeplBrowser'
-import { DeeplFetch } from './services/deepl/DeeplFetch'
 import { GTransApi } from './services/gtrans/api'
 
 export class Deepler extends DeeplBase {
   async translate(
     opts: TTranslateOpts,
-    prior: ('deepl' | 'google' | 'ya')[] = ['deepl', 'google', 'ya']
+    prior: ('deeplbro' | 'gapi' | 'yabro')[] = ['deeplbro', 'yabro', 'gapi']
   ): Promise<TTranslateResult> {
     let result
 
     for (const priorName of prior) {
-      if (priorName === 'deepl') {
+      if (priorName === 'deeplbro') {
         result = await new DeeplBrowser(this.settings).translateWithInstance(opts)
         if (result?.translatedText) {
           return result
@@ -19,7 +18,7 @@ export class Deepler extends DeeplBase {
         continue
       }
 
-      if (priorName === 'google') {
+      if (priorName === 'gapi') {
         result = await new GTransApi().translate(opts)
         if (result?.translatedText) {
           return result
@@ -27,7 +26,7 @@ export class Deepler extends DeeplBase {
         continue
       }
 
-      if (priorName === 'ya') {
+      if (priorName === 'yabro') {
         continue
       }
     }
