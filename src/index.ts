@@ -4,25 +4,35 @@ import { DeeplFetch } from './services/deepl/DeeplFetch'
 import { GTransApi } from './services/gtrans/api'
 
 export class Deepler extends DeeplBase {
-  async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
+  async translate(
+    opts: TTranslateOpts,
+    prior: ('deepl' | 'google' | 'ya')[] = ['deepl', 'google', 'ya']
+  ): Promise<TTranslateResult> {
     let result
-    // const result = await new DeeplFetch(this.settings).translate(opts)
 
-    // if (result?.translatedText) {
-    //   return result
-    // }
+    for (const priorName of prior) {
+      if (priorName === 'deepl') {
+        result = await new DeeplBrowser(this.settings).translateWithInstance(opts)
+        if (result?.translatedText) {
+          return result
+        }
+        continue
+      }
 
-    result = await new DeeplBrowser(this.settings).translateWithInstance(opts)
-    if (result?.translatedText) {
-      return result
+      if (priorName === 'google') {
+        result = await new GTransApi().translate(opts)
+        if (result?.translatedText) {
+          return result
+        }
+        continue
+      }
+
+      if (priorName === 'ya') {
+        continue
+      }
     }
 
-    result = await new GTransApi().translate(opts)
-    if (result?.translatedText) {
-      return result
-    }
-
-    return result
+    return { translatedText: opts.text }
   }
 }
 
