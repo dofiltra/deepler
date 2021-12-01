@@ -37,5 +37,4 @@ export class Deepler extends TransBase {
 
 export * from './services/base/TransBase'
 export * from './services/deepl/DeeplBrowser'
-export * from './services/deepl/DeeplFetch'
 export * from './services/gtrans/api'
