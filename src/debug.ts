@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { Deepler } from '.'
+import { Dotransa } from '.'
 import { GTransApi } from './services/gtrans/api'
 
 const debug = async () => {
@@ -107,7 +107,7 @@ const debug = async () => {
   // })
   // console.log(texts.length)
 
-  const deepl = new Deepler({
+  const dotransa = await Dotransa.build({
     maxInstanceCount: 10,
     maxInstanceUse: 1000,
     headless: false
@@ -120,7 +120,7 @@ const debug = async () => {
         ...ruTexts
           .filter((t) => t?.trim())
           .map(async (t) => {
-            const translateResult = await deepl.translate({
+            const translateResult = await dotransa.translate({
               text: t,
               targetLang: 'EN',
               tryLimit: 10
@@ -134,7 +134,7 @@ const debug = async () => {
         ...enTexts
           .filter((t) => t?.trim())
           .map(async (t) => {
-            const translateResult = await deepl.translate({
+            const translateResult = await dotransa.translate({
               text: t,
               targetLang: 'RU',
               tryLimit: 1

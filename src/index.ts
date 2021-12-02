@@ -1,8 +1,19 @@
-import { TransBase, TransPrior, TTranslateOpts, TTranslateResult } from './services/base/TransBase'
+import { TransBase, TransPrior, TTranslateOpts, TTranslateResult, TTransSettings } from './services/base/TransBase'
 import { DeeplBrowser } from './services/detrans/bro'
 import { GTransApi } from './services/gtrans/api'
 
-export class Deepler extends TransBase {
+export class Dotransa extends TransBase {
+  static async build(s: TTransSettings) {
+    return new Dotransa(s, true)
+  }
+
+  constructor(s: TTransSettings, isBuild: boolean) {
+    if (!isBuild) {
+      throw 'use static Dotransa.build(settings)'
+    }
+    super(s)
+  }
+
   async translate(
     opts: TTranslateOpts,
     priors: TransPrior[] = [TransPrior.DeBro, TransPrior.YaBro, TransPrior.GoApi]

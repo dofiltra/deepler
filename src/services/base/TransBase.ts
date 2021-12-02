@@ -5,7 +5,6 @@ import _ from 'lodash'
 export type TTransSettings = {
   proxies?: ProxyItem[]
   headless?: boolean
-  allowBrowser?: boolean
   maxInstanceCount?: number
   maxInstanceUse?: number
   instanceLiveMinutes?: number
@@ -53,7 +52,6 @@ export class TransBase {
 
   constructor(s: TTransSettings) {
     this.settings = {
-      allowBrowser: true,
       instanceLiveMinutes: 15,
       maxInstanceCount: 3,
       maxInstanceUse: 100,
