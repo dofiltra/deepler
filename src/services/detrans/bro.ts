@@ -86,8 +86,11 @@ export class DeeplBrowser {
             return resolve({ translatedText })
           }
         }
-      } catch {
-        // log
+      } catch (e: any) {
+        if (e?.message?.toLowerCase().includes('closed')) {
+          await Dotransa.closeInstance(inst.id)
+          return resolve(null)
+        }
       }
 
       try {
