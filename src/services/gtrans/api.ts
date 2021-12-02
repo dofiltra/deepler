@@ -1,7 +1,8 @@
-import { TransBase, TTranslateOpts, TTranslateResult } from '../..'
+import { TransBase } from '../..'
 import gapiLight from 'translate-google'
 import gapiWithProxy from '@vitalets/google-translate-api'
 import tunnel from 'tunnel'
+import { TTranslateOpts, TTranslateResult } from '../../types/trans'
 
 export class GTransApi extends TransBase {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
