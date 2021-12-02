@@ -1,15 +1,15 @@
 import { BrowserManager, Page } from 'browser-manager'
 import { ProxyItem } from 'dprx-types'
 
-export type TTransSettings = {
-  proxies?: ProxyItem[]
+export type TInstanceOpts = {
+  type: TransType.DeBro | TransType.GoBro | TransType.YaBro
+  maxInstance: number
+  maxPerUse: number
+  liveMinutes?: number
   headless?: boolean
-  maxInstanceCount?: number
-  maxInstanceUse?: number
-  instanceLiveMinutes?: number
 }
 
-export enum TransPrior {
+export enum TransType {
   DeBro = 'debro',
   DeApi = 'deapi',
 
@@ -44,9 +44,11 @@ export type TTranslateLangResponse = {
 
 export type TBrowserInstance = {
   id: string
+  type: TransType
   browser: BrowserManager
   page: Page
   idle: boolean
   usedCount: number
+  maxUse: number
   proxyItem?: ProxyItem
 }

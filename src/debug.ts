@@ -1,6 +1,7 @@
 /* tslint:disable:no-console */
 import { Dotransa } from '.'
 import { GTransApi } from './services/gtrans/api'
+import { TransType } from './types/trans'
 
 const debug = async () => {
   const ruTexts = [
@@ -107,11 +108,14 @@ const debug = async () => {
   // })
   // console.log(texts.length)
 
-  const dotransa = await Dotransa.build({
-    maxInstanceCount: 10,
-    maxInstanceUse: 1000,
-    headless: false
-  })
+  const dotransa = await Dotransa.build([
+    {
+      maxPerUse: 1000,
+      maxInstance: 2,
+      headless: false,
+      type: TransType.DeBro
+    }
+  ])
   const arr: any[] = []
   let counter = 0
   for (let i = 0; i < 1000; i++) {

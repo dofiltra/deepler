@@ -1,24 +1,21 @@
 import _ from 'lodash'
-import crypto from 'crypto'
-import { BrowserManager, devices, Page } from 'browser-manager'
+import { BrowserManager, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { TransBase } from '../base/TransBase'
-import { TBrowserInstance, TTranslateOpts, TTranslateResult } from '../../types/trans'
+import { Proxifible } from '../base/Proxifible'
+import { TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
+import { Dotransa } from '../..'
 
-export class DeeplBrowser extends TransBase {
-  private static creatingInstances = false
-  static instances: TBrowserInstance[] = []
-
-  async translateWithInstance(opts: TTranslateOpts): Promise<TTranslateResult> {
+export class DeeplBrowser {
+  async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const { text, targetLang, tryIndex = 0, tryLimit = 5 } = opts
 
     if (tryIndex >= tryLimit) {
       return { translatedText: text }
     }
 
-    const inst = await this.getInstance()
+    const inst = await Dotransa.getInstance(TransType.DeBro)
     const page = inst?.page
-    this.incProxy(inst.proxyItem?.url)
+    Proxifible.incProxy(inst.proxyItem?.url())
 
     const result: TTranslateResult | null = await new Promise(async (resolve) => {
       if (!page) {
@@ -27,16 +24,15 @@ export class DeeplBrowser extends TransBase {
       }
 
       try {
-        await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
-          waitUntil: 'networkidle'
-        })
-        await sleep(1e3)
+        // await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
+        //   waitUntil: 'networkidle'
+        // })
+        // await sleep(1e3)
 
-        // page.request.
         const isPauseProxy = await this.isPauseProxy(page)
         if (isPauseProxy) {
-          await this.incProxy(inst.proxyItem?.url, this.limitProxyCount)
-          await this.closeInstance(inst.id)
+          await Proxifible.incProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
+          await Dotransa.closeInstance(inst.id)
           return resolve(null)
         }
 
@@ -57,7 +53,7 @@ export class DeeplBrowser extends TransBase {
             let hash = page.url().split('#')[1]
 
             if (!hash) {
-              await this.type(
+              await this.typing(
                 page,
                 text
                   .split(' ')
@@ -95,12 +91,12 @@ export class DeeplBrowser extends TransBase {
       }
 
       try {
-        await this.type(page, text.slice(0, 10))
+        await this.typing(page, text.slice(0, 10))
         if (!page.url().includes(targetLang)) {
           await this.switchTargetLang(page, targetLang)
         }
         await sleep(5e3)
-        await this.type(page, text)
+        await this.typing(page, text)
         const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
 
         if (resp?.translatedText) {
@@ -113,13 +109,13 @@ export class DeeplBrowser extends TransBase {
       return resolve(null)
     })
 
-    this.updateInstance(inst.id, {
+    Dotransa.updateInstance(inst.id, {
       idle: true,
       usedCount: inst.usedCount + 1
     })
 
     if (!result) {
-      return await this.translateWithInstance({
+      return await this.translate({
         ...opts,
         tryIndex: tryIndex + 1
       })
@@ -182,7 +178,7 @@ export class DeeplBrowser extends TransBase {
     await sleep(5e3)
   }
 
-  protected async type(page: Page, text: string) {
+  protected async typing(page: Page, text: string) {
     try {
       const isWin = process.platform === 'win32'
       const sourceSelector = 'textarea.lmt__source_textarea'
@@ -196,112 +192,5 @@ export class DeeplBrowser extends TransBase {
     } catch (error) {
       return { error }
     }
-  }
-
-  protected async checkLiveInstance() {
-    const { maxInstanceUse = 100 } = this.settings
-
-    DeeplBrowser.instances = (
-      await Promise.all(
-        DeeplBrowser.instances.map(async (inst) => {
-          try {
-            const isLive = !!(await inst.browser.isLive())
-            if (isLive && inst.usedCount < maxInstanceUse) {
-              return inst
-            }
-            await inst.browser.close()
-          } catch {
-            //
-          }
-          return null
-        })
-      )
-    ).filter((inst) => inst) as TBrowserInstance[]
-  }
-
-  protected async createInstances(): Promise<void> {
-    if (DeeplBrowser.creatingInstances) {
-      await sleep(_.random(1e3, 5e3))
-      return
-      // return await this.createInstances()
-    }
-
-    DeeplBrowser.creatingInstances = true
-    const { headless, maxInstanceCount = 1, instanceLiveMinutes = 10 } = this.settings
-    const newInstancesCount = maxInstanceCount - DeeplBrowser.instances.length
-    const instanceLiveSec = instanceLiveMinutes * 60
-
-    for (let i = 0; i < newInstancesCount; i++) {
-      const id = crypto.randomBytes(16).toString('hex')
-      const proxyItem = await this.getProxy()
-      const browser = await BrowserManager.build<BrowserManager>({
-        maxOpenedBrowsers: maxInstanceCount,
-        launchOpts: {
-          headless: headless !== false,
-          proxy: proxyItem?.toPwrt
-        },
-        device: devices['Pixel 5'],
-        lockCloseFirst: instanceLiveSec,
-        idleCloseSeconds: instanceLiveSec
-      })
-      const page = (await browser!.newPage({
-        url: `https://www.deepl.com/translator`,
-        waitUntil: 'networkidle',
-        blackList: {
-          resourceTypes: ['stylesheet', 'image']
-        }
-      })) as Page
-
-      if (!browser || !page) {
-        continue
-      }
-
-      page.on('response', async (response) => {
-        if (response.status() !== 429) {
-          return
-        }
-        await this.incProxy(proxyItem?.url, this.limitProxyCount)
-        await this.closeInstance(id)
-      })
-
-      DeeplBrowser.instances.push({
-        id,
-        idle: true,
-        usedCount: 0,
-        browser,
-        page,
-        proxyItem
-      })
-    }
-
-    DeeplBrowser.creatingInstances = false
-  }
-
-  protected async getInstance(): Promise<TBrowserInstance> {
-    await this.checkLiveInstance()
-    await this.createInstances()
-
-    const inst = DeeplBrowser.instances.sort((a, b) => a.usedCount - b.usedCount).find((i) => i.idle)
-
-    if (inst) {
-      this.updateInstance(inst.id, {
-        idle: false,
-        usedCount: inst.usedCount + 1
-      })
-      return inst
-    }
-
-    await sleep(_.random(1e3, 5e3))
-    return await this.getInstance()
-  }
-
-  protected updateInstance(id: string, upd: any) {
-    const index = DeeplBrowser.instances.findIndex((i) => i.id === id)
-    DeeplBrowser.instances[index] = { ...DeeplBrowser.instances[index], ...upd }
-  }
-
-  protected async closeInstance(id: string) {
-    const index = DeeplBrowser.instances.findIndex((i) => i.id === id)
-    await DeeplBrowser.instances[index]?.browser.close()
   }
 }

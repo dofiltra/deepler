@@ -1,10 +1,10 @@
-import { TransBase } from '../..'
+import { Proxifible } from '../..'
 import gapiLight from 'translate-google'
 import gapiWithProxy from '@vitalets/google-translate-api'
 import tunnel from 'tunnel'
 import { TTranslateOpts, TTranslateResult } from '../../types/trans'
 
-export class GTransApi extends TransBase {
+export class GTransApi {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const { text, targetLang, tryIndex = 0, tryLimit = 5 } = opts
 
@@ -22,7 +22,7 @@ export class GTransApi extends TransBase {
     }
 
     try {
-      const proxy = await this.getProxy()
+      const proxy = await Proxifible.getProxy()
       if (proxy) {
         const proxyTunnel = {
           host: proxy.ip,
