@@ -117,7 +117,6 @@ const debug = async () => {
     }
   ])
   const arr: any[] = []
-  let counter = 0
   for (let i = 0; i < 1000; i++) {
     arr.push(
       ...[
@@ -153,7 +152,7 @@ const debug = async () => {
   }
 
   const a = await Promise.all(arr)
-  debugger
+  // debugger
   // console.log(a)
 }
 
