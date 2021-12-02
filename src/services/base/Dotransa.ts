@@ -150,6 +150,7 @@ export class Dotransa {
   static async closeInstance(id: string) {
     const index = Dotransa.instances.findIndex((i) => i.id === id)
     await Dotransa.instances[index]?.browser?.close()
+    delete Dotransa.instances[index]
   }
 
   protected static async createDeBro(opts: TInstanceOpts, newInstancesCount: number): Promise<void> {
