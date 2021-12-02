@@ -4,7 +4,7 @@ import { ProxyItem } from 'dprx-types'
 export class Proxifible {
   static proxies: ProxyItem[] = []
   static limitPerProxy = 1000
-  
+
   static async getProxy() {
     const sortProxies = _.sortBy(Proxifible.proxies, 'useCount')
 
