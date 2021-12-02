@@ -29,12 +29,12 @@ export class DeeplBrowser {
         // })
         // await sleep(1e3)
 
-        const isPauseProxy = await this.isPauseProxy(page)
-        if (isPauseProxy) {
-          await Proxifible.incProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
-          await Dotransa.closeInstance(inst.id)
-          return resolve(null)
-        }
+        // const isPauseProxy = await this.isPauseProxy(page)
+        // if (isPauseProxy) {
+        //   await Proxifible.incProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
+        //   await Dotransa.closeInstance(inst.id)
+        //   return resolve(null)
+        // }
 
         await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
           waitUntil: 'networkidle'
@@ -124,15 +124,15 @@ export class DeeplBrowser {
     return result
   }
 
-  protected async isPauseProxy(page: Page) {
-    try {
-      const hasBlockedContent = !!(await page.$('.lmt__notification__blocked'))
-      return hasBlockedContent
-    } catch {
-      //
-    }
-    return false
-  }
+  // protected async isPauseProxy(page: Page) {
+  //   try {
+  //     const hasBlockedContent = !!(await page.$('.lmt__notification__blocked'))
+  //     return hasBlockedContent
+  //   } catch {
+  //     //
+  //   }
+  //   return false
+  // }
 
   protected async getHandleJobsResult(pwrt: BrowserManager, page: Page, text: string) {
     try {
