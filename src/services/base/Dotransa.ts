@@ -122,7 +122,7 @@ export class Dotransa {
 
   static async getInstance(type: TransType): Promise<TBrowserInstance> {
     const inst = this.instances
-      .filter((inst) => inst.type === type)
+      .filter((ins) => ins.type === type)
       .sort((a, b) => a.usedCount - b.usedCount)
       .find((i) => i.idle)
 
