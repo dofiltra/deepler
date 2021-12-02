@@ -71,23 +71,23 @@ const debug = async () => {
   `.split('\n')
   ]
 
-  const gTranslateResultEn = await Promise.all(
-    enTexts.map(async (t) =>
-      new GTransApi({}).translate({
-        targetLang: 'RU',
-        text: t
-      })
-    )
-  )
+  // const gTranslateResultEn = await Promise.all(
+  //   enTexts.map(async (t) =>
+  //     new GTransApi({}).translate({
+  //       targetLang: 'RU',
+  //       text: t
+  //     })
+  //   )
+  // )
 
-  const gTranslateResult = await Promise.all(
-    ruTexts.map(async (t) =>
-      new GTransApi({}).translate({
-        targetLang: 'EN',
-        text: t
-      })
-    )
-  )
+  // const gTranslateResult = await Promise.all(
+  //   ruTexts.map(async (t) =>
+  //     new GTransApi({}).translate({
+  //       targetLang: 'EN',
+  //       text: t
+  //     })
+  //   )
+  // )
   // debugger
   // const fetchResult = await new DeeplFetch({
   //   headless: false,
@@ -107,24 +107,49 @@ const debug = async () => {
   // })
   // console.log(texts.length)
 
-  const a = await Promise.all(
-    ruTexts.map(async (t) => {
-      const translateResult = await new Deepler({
-        maxInstanceCount: 1,
-        maxInstanceUse: 3,
-        headless: false
-      }).translate({
-        text: t,
-        targetLang: 'EN',
-        tryLimit: 10
-      })
+  const deepl = new Deepler({
+    maxInstanceCount: 10,
+    maxInstanceUse: 1000,
+    headless: false
+  })
+  const arr: any[] = []
+  let counter = 0
+  for (let i = 0; i < 1000; i++) {
+    arr.push(
+      ...[
+        ...ruTexts
+          .filter((t) => t?.trim())
+          .map(async (t) => {
+            const translateResult = await deepl.translate({
+              text: t,
+              targetLang: 'EN',
+              tryLimit: 10
+            })
 
-      console.log(t, translateResult)
+            console.log(++counter, t, translateResult)
 
-      return { translateResult, text: t }
-    })
-  )
-  // debugger
+            return { translateResult, text: t }
+          }),
+
+        ...enTexts
+          .filter((t) => t?.trim())
+          .map(async (t) => {
+            const translateResult = await deepl.translate({
+              text: t,
+              targetLang: 'RU',
+              tryLimit: 1
+            })
+
+            console.log(++counter, t, translateResult)
+
+            return { translateResult, text: t }
+          })
+      ]
+    )
+  }
+
+  const a = await Promise.all(arr)
+  debugger
   // console.log(a)
 }
 
