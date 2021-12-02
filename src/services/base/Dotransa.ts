@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 import _ from 'lodash'
 import crypto from 'crypto'
 import { sleep } from 'time-helpers'
@@ -6,6 +7,7 @@ import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanc
 import { Proxifible } from './Proxifible'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { ProxyItem } from 'dprx-types'
+import PQueue from 'p-queue'
 
 export class Dotransa {
   protected static creatingInstances = false
@@ -30,11 +32,38 @@ export class Dotransa {
       maxInstance: 1
     }
   ]
+  protected static queue = new PQueue({ concurrency: 1 })
+  protected static translateResults: { [id: string]: TTranslateResult } = {}
 
   static async build(instanceOpts: TInstanceOpts[], proxies?: ProxyItem[]) {
     Dotransa.instanceOpts = instanceOpts
     Proxifible.proxies = proxies || []
     await this.createInstances()
+
+    const queue = Dotransa.queue
+    let activeCount = 0
+    let completedCount = 0
+
+    queue.concurrency = instanceOpts.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0)
+    queue.on('active', () => {
+      console.log(
+        `Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${
+          queue.pending
+        } | Date: ${new Date().toJSON()}`
+      )
+    })
+    queue.on('completed', (result) => {
+      console.log(
+        `#${++completedCount} Dotransa completed | Date: ${new Date().toJSON()}\n`,
+        result?.originalText?.slice(0, 30),
+        ' --> ',
+        result?.translatedText?.slice(0, 30)
+      )
+    })
+    queue.on('error', (error) => console.log('error', error))
+    queue.on('idle', async () => {
+      console.log(`Dotransa queue is idle.  Size: ${queue.size}  Pending: ${queue.pending}`)
+    })
 
     return new Dotransa(true)
   }
@@ -104,7 +133,7 @@ export class Dotransa {
       })
       return inst
     }
-    
+
     await sleep(_.random(5e3, 10e3))
     await this.closeDeadInstances()
     await this.createInstances()
@@ -154,6 +183,7 @@ export class Dotransa {
         if (response.status() !== 429) {
           return
         }
+        // debugger
         await Proxifible.incProxy(proxyItem?.url(), Proxifible.limitPerProxy)
         await this.closeInstance(id)
       })
@@ -181,13 +211,31 @@ export class Dotransa {
     opts: TTranslateOpts,
     priors: TransType[] = [TransType.DeBro, TransType.YaBro, TransType.GoApi]
   ): Promise<TTranslateResult> {
+    const id = crypto.randomBytes(16).toString('hex')
+    await Dotransa.queue.add(() => this.translateQueue(id, opts, priors))
+
+    while (!Dotransa.translateResults[id]) {
+      await sleep(_.random(3e3, 10e3))
+    }
+
+    const result = Dotransa.translateResults[id]
+    delete Dotransa.translateResults[id]
+
+    return result
+  }
+
+  protected async translateQueue(
+    id: string,
+    opts: TTranslateOpts,
+    priors: TransType[] = [TransType.DeBro, TransType.YaBro, TransType.GoApi]
+  ) {
     let result
 
     for (const prior of priors) {
       if (prior === TransType.DeBro) {
         result = await new DeeplBrowser().translate(opts)
         if (result?.translatedText) {
-          return result
+          break
         }
         continue
       }
@@ -195,7 +243,7 @@ export class Dotransa {
       if (prior === TransType.GoApi) {
         result = await new GTransApi().translate(opts)
         if (result?.translatedText) {
-          return result
+          break
         }
         continue
       }
@@ -205,6 +253,8 @@ export class Dotransa {
       }
     }
 
-    return { translatedText: opts.text }
+    Dotransa.translateResults[id] = result || { translatedText: opts.text }
+
+    return { translatedText: Dotransa.translateResults[id]?.translatedText, originalText: opts.text }
   }
 }

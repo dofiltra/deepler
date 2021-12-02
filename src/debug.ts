@@ -111,7 +111,7 @@ const debug = async () => {
   const dotransa = await Dotransa.build([
     {
       maxPerUse: 1000,
-      maxInstance: 2,
+      maxInstance: 10,
       headless: false,
       type: TransType.DeBro
     }
@@ -125,12 +125,12 @@ const debug = async () => {
           .filter((t) => t?.trim())
           .map(async (t) => {
             const translateResult = await dotransa.translate({
-              text: t,
+              text: t + ' ' + Math.random(),
               targetLang: 'EN',
               tryLimit: 10
             })
 
-            console.log(++counter, t, translateResult)
+            // console.log(++counter, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
 
             return { translateResult, text: t }
           }),
@@ -139,12 +139,12 @@ const debug = async () => {
           .filter((t) => t?.trim())
           .map(async (t) => {
             const translateResult = await dotransa.translate({
-              text: t,
+              text: t + ' ' + Math.random(),
               targetLang: 'RU',
               tryLimit: 1
             })
 
-            console.log(++counter, t, translateResult)
+            // console.log(++counter, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
 
             return { translateResult, text: t }
           })
