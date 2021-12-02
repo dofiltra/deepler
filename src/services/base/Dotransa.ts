@@ -43,28 +43,30 @@ export class Dotransa {
     await this.createInstances()
 
     const queue = Dotransa.queue
-    let activeCount = 0
-    let completedCount = 0
+    // let activeCount = 0
+    // let completedCount = 0
 
     queue.concurrency = instanceOpts?.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0) || 1
     queue.on('active', () => {
-      console.log(
-        `Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${
-          queue.pending
-        } | Date: ${new Date().toJSON()}`
-      )
+      // console.log(
+      //   `Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${
+      //     queue.pending
+      //   } | Date: ${new Date().toJSON()}`
+      // )
     })
     queue.on('completed', (result) => {
-      console.log(
-        `#${++completedCount} Dotransa completed | Date: ${new Date().toJSON()}\n`,
-        result?.originalText?.slice(0, 30),
-        ' --> ',
-        result?.translatedText?.slice(0, 30)
-      )
+      // if (result?.targetLang) {
+      //   console.log(
+      //     `#${++completedCount} Dotransa completed | Date: ${new Date().toJSON()}\n`,
+      //     result?.originalText?.slice(0, 30),
+      //     ' --> ',
+      //     result?.translatedText?.slice(0, 30)
+      //   )
+      // }
     })
-    queue.on('error', (error) => console.log('error', error))
+    queue.on('error', (error) => console.log('\n---\nDotransa error', error))
     queue.on('idle', async () => {
-      console.log(`Dotransa queue is idle.  Size: ${queue.size}  Pending: ${queue.pending}`)
+      // console.log(`Dotransa queue is idle.  Size: ${queue.size}  Pending: ${queue.pending}`)
     })
 
     return new Dotransa(true)
@@ -258,6 +260,10 @@ export class Dotransa {
 
     Dotransa.translateResults[id] = result || { translatedText: opts.text }
 
-    return { translatedText: Dotransa.translateResults[id]?.translatedText, originalText: opts.text }
+    return {
+      translatedText: Dotransa.translateResults[id]?.translatedText,
+      originalText: opts.text,
+      targetLang: opts.targetLang
+    }
   }
 }
