@@ -35,8 +35,10 @@ export class Dotransa {
   protected static queue = new PQueue({ concurrency: 1 })
   protected static translateResults: { [id: string]: TTranslateResult } = {}
 
-  static async build(instanceOpts: TInstanceOpts[], proxies?: ProxyItem[]) {
-    Dotransa.instanceOpts = instanceOpts
+  static async build(instanceOpts?: TInstanceOpts[], proxies?: ProxyItem[]) {
+    if (instanceOpts) {
+      Dotransa.instanceOpts = instanceOpts
+    }
     Proxifible.proxies = proxies || []
     await this.createInstances()
 
@@ -44,7 +46,7 @@ export class Dotransa {
     let activeCount = 0
     let completedCount = 0
 
-    queue.concurrency = instanceOpts.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0)
+    queue.concurrency = instanceOpts?.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0) || 1
     queue.on('active', () => {
       console.log(
         `Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${
