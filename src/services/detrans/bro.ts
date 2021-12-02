@@ -3,16 +3,7 @@ import crypto from 'crypto'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
 import { TransBase, TTranslateOpts, TTranslateResult } from '../base/TransBase'
-import { ProxyItem } from 'dprx-types'
-
-export type TBrowserInstance = {
-  id: string
-  browser: BrowserManager
-  page: Page
-  idle: boolean
-  usedCount: number
-  proxyItem?: ProxyItem
-}
+import { TBrowserInstance } from '../../types/trans'
 
 export class DeeplBrowser extends TransBase {
   private static creatingInstances = false
@@ -241,6 +232,7 @@ export class DeeplBrowser extends TransBase {
     const instanceLiveSec = instanceLiveMinutes * 60
 
     for (let i = 0; i < newInstancesCount; i++) {
+      const id = crypto.randomBytes(16).toString('hex')
       const proxyItem = await this.getProxy()
       const browser = await BrowserManager.build<BrowserManager>({
         maxOpenedBrowsers: maxInstanceCount,
@@ -264,8 +256,16 @@ export class DeeplBrowser extends TransBase {
         continue
       }
 
+      page.on('response', async (response) => {
+        if (response.status() !== 429) {
+          return
+        }
+        await this.incProxy(proxyItem?.url, this.limitProxyCount)
+        await this.closeInstance(id)
+      })
+
       DeeplBrowser.instances.push({
-        id: crypto.randomBytes(16).toString('hex'),
+        id,
         idle: true,
         usedCount: 0,
         browser,
