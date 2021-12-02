@@ -1,8 +1,6 @@
-import { LowDbKv } from 'dbtempo'
-import { ProxyItem } from 'dprx-types'
 import _ from 'lodash'
+import { LowDbKv } from 'dbtempo'
 import { TTransSettings } from '../../types/trans'
-
 
 export class TransBase {
   protected settings: TTransSettings
@@ -13,9 +11,6 @@ export class TransBase {
 
   constructor(s: TTransSettings) {
     this.settings = {
-      instanceLiveMinutes: 15,
-      maxInstanceCount: 3,
-      maxInstanceUse: 100,
       ...s
     }
   }
