@@ -1,5 +1,6 @@
-import { DeeplBrowser, GTransApi } from "../.."
-import { TransBase, TTransSettings, TTranslateOpts, TransPrior, TTranslateResult } from "./TransBase"
+import { DeeplBrowser, GTransApi } from '../..'
+import { TTransSettings, TTranslateOpts, TransPrior, TTranslateResult } from '../../types/trans'
+import { TransBase } from './TransBase'
 
 export class Dotransa extends TransBase {
   static async build(s: TTransSettings) {

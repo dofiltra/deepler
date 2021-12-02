@@ -2,8 +2,8 @@ import _ from 'lodash'
 import crypto from 'crypto'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { TransBase, TTranslateOpts, TTranslateResult } from '../base/TransBase'
-import { TBrowserInstance } from '../../types/trans'
+import { TransBase } from '../base/TransBase'
+import { TBrowserInstance, TTranslateOpts, TTranslateResult } from '../../types/trans'
 
 export class DeeplBrowser extends TransBase {
   private static creatingInstances = false
