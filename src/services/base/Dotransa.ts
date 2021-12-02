@@ -84,7 +84,7 @@ export class Dotransa {
     Dotransa.creatingInstances = true
     for (const opts of Dotransa.instanceOpts) {
       const { type, maxInstance } = opts
-      const newInstanceCount = maxInstance - Dotransa.instances.filter((inst) => inst.type === type).length
+      const newInstanceCount = maxInstance - Dotransa.instances.filter((inst) => inst?.type === type).length
 
       if (newInstanceCount < 1) {
         continue
@@ -124,7 +124,7 @@ export class Dotransa {
 
   static async getInstance(type: TransType): Promise<TBrowserInstance> {
     const inst = this.instances
-      .filter((ins) => ins.type === type)
+      .filter((ins) => ins?.type === type)
       .sort((a, b) => a.usedCount - b.usedCount)
       .find((i) => i.idle)
 
@@ -143,12 +143,12 @@ export class Dotransa {
   }
 
   static updateInstance(id: string, upd: any) {
-    const index = Dotransa.instances.findIndex((i) => i.id === id)
+    const index = Dotransa.instances.findIndex((i) => i?.id === id)
     Dotransa.instances[index] = { ...Dotransa.instances[index], ...upd }
   }
 
   static async closeInstance(id: string) {
-    const index = Dotransa.instances.findIndex((i) => i.id === id)
+    const index = Dotransa.instances.findIndex((i) => i?.id === id)
     await Dotransa.instances[index]?.browser?.close()
     delete Dotransa.instances[index]
   }
