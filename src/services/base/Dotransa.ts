@@ -203,7 +203,7 @@ export class Dotransa {
 
   constructor(isBuild: boolean) {
     if (!isBuild) {
-      throw 'use static Dotransa.build(settings)'
+      throw new Error('use static Dotransa.build(settings)')
     }
   }
 
