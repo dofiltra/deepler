@@ -220,9 +220,10 @@ export class Dotransa {
   ): Promise<TTranslateResult> {
     const id = crypto.randomBytes(16).toString('hex')
     await Dotransa.queue.add(() => this.translateQueue(id, opts, priors))
+    await sleep(Dotransa.queue.size * 1000)
 
     while (!Dotransa.translateResults[id]) {
-      await sleep(_.random(3e3, 10e3))
+      await sleep(_.random(3e3, 5e3))
     }
 
     const result = Dotransa.translateResults[id]
