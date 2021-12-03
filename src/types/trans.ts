@@ -52,4 +52,3 @@ export type TBrowserInstance = {
   maxPerUse: number
   proxyItem?: ProxyItem
 }
-
