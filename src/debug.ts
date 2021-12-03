@@ -1,9 +1,15 @@
 /* tslint:disable:no-console */
+import { ProxyItem, Proxifible } from 'dprx-types'
+import path from 'path'
+import dotenv from 'dotenv'
+import { fileURLToPath } from 'url'
 import { Dotransa } from '.'
-import { GTransApi } from './services/gtrans/api'
 import { TransType } from './types/trans'
 
 const debug = async () => {
+  const rootPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+  dotenv.config({ path: path.join(rootPath, `.env`) })
+
   const ruTexts = [
     `Генеральный секретарь НАТО Йенс Столтенберг также повторил свой призыв к России провести «деэскалацию» наращивания военной мощи у границы с Украиной и предупредил о «последствиях» в случае применения силы.`,
 
@@ -107,6 +113,18 @@ const debug = async () => {
   //   text: texts[0]
   // })
   // console.log(texts.length)
+  const proxies = [
+    new ProxyItem({
+      type: process.env.PROXY_TYPE,
+      ip: process.env.PROXY_IP!,
+      port: process.env.PROXY_PORT,
+      changeUrl: process.env.PROXY_CHANGE_URL!,
+      user: process.env.PROXY_USER,
+      pass: process.env.PROXY_PASS,
+      version: 4
+    } as ProxyItem)
+  ]
+  Proxifible.proxies = proxies
 
   const dotransa = await Dotransa.build([
     {
