@@ -223,7 +223,7 @@ export class Dotransa {
     await sleep(Dotransa.queue.size * 1000)
 
     while (!Dotransa.translateResults[id]) {
-      await sleep(_.random(3e3, 5e3))
+      await sleep(_.random(1e3, 3e3))
     }
 
     const result = Dotransa.translateResults[id]

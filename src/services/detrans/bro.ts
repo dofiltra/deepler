@@ -24,11 +24,6 @@ export class DeeplBrowser {
       }
 
       try {
-        // await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/`, {
-        //   waitUntil: 'networkidle'
-        // })
-        // await sleep(1e3)
-
         // const isPauseProxy = await this.isPauseProxy(page)
         // if (isPauseProxy) {
         //   await Proxifible.incProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
