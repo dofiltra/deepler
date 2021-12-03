@@ -1,12 +1,19 @@
 import _ from 'lodash'
 import { ProxyItem } from 'dprx-types'
 
+export type TProxyOpts = {
+  filterTypes: ('http' | 'https' | 'socks5')[]
+}
+
 export class Proxifible {
   static proxies: ProxyItem[] = []
   static limitPerProxy = 1000
 
-  static async getProxy() {
-    const sortProxies = _.sortBy(Proxifible.proxies, 'useCount')
+  static async getProxy(opts?: TProxyOpts) {
+    const { filterTypes } = { ...opts }
+    const sortProxies = _.sortBy(Proxifible.proxies, 'useCount').filter(
+      (p) => !filterTypes?.length || filterTypes.includes(p.type)
+    )
 
     const selectedProxy = sortProxies[0]
     if (selectedProxy) {

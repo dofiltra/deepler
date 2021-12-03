@@ -49,6 +49,6 @@ export type TBrowserInstance = {
   page: Page
   idle: boolean
   usedCount: number
-  maxUse: number
+  maxPerUse: number
   proxyItem?: ProxyItem
 }

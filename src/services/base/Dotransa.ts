@@ -111,7 +111,7 @@ export class Dotransa {
         Dotransa.instances.map(async (inst) => {
           try {
             const isLive = !!(await inst.browser.isLive())
-            if (isLive && inst.usedCount < inst.maxUse) {
+            if (isLive && inst.usedCount < inst.maxPerUse) {
               return inst
             }
             await inst.browser.close()
@@ -156,14 +156,16 @@ export class Dotransa {
   }
 
   protected static async createDeBro(opts: TInstanceOpts, newInstancesCount: number): Promise<void> {
-    const { headless, maxInstance: maxCount = 1, maxPerUse: maxUse = 100, liveMinutes = 10 } = opts
+    const { headless, maxInstance = 1, maxPerUse = 100, liveMinutes = 10 } = opts
     const instanceLiveSec = liveMinutes * 60
 
     for (let i = 0; i < newInstancesCount; i++) {
       const id = crypto.randomBytes(16).toString('hex')
-      const proxyItem = await Proxifible.getProxy()
+      const proxyItem = await Proxifible.getProxy({
+        filterTypes: ['http', 'https']
+      })
       const browser = await BrowserManager.build<BrowserManager>({
-        maxOpenedBrowsers: maxCount,
+        maxOpenedBrowsers: maxInstance,
         launchOpts: {
           headless: headless !== false,
           proxy: proxyItem?.toPwrt()
@@ -198,11 +200,11 @@ export class Dotransa {
         type: TransType.DeBro,
         idle: true,
         usedCount: 0,
-        maxUse,
+        maxPerUse,
         browser,
         page,
         proxyItem
-      })
+      } as TBrowserInstance)
     }
   }
 
