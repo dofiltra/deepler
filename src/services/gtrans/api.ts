@@ -5,11 +5,11 @@ import tunnel from 'tunnel'
 import { TTranslateOpts, TTranslateResult } from '../../types/trans'
 
 export class GTransApi {
-  async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
+  async translate(opts: TTranslateOpts): Promise<TTranslateResult | null> {
     const { text, targetLang, tryIndex = 0, tryLimit = 5 } = opts
 
     if (tryIndex >= tryLimit) {
-      return { translatedText: text }
+      return null
     }
 
     try {
