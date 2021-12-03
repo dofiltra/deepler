@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import { BrowserManager, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { Proxifible } from '../base/Proxifible'
 import { TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
 import { Dotransa } from '../..'
+import { Proxifible } from 'dprx-types'
 
 export class DeeplBrowser {
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {

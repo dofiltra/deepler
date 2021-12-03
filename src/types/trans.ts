@@ -53,6 +53,3 @@ export type TBrowserInstance = {
   proxyItem?: ProxyItem
 }
 
-export type TFilterProxyOpts = {
-  filterTypes: ('http' | 'https' | 'socks5')[]
-}
