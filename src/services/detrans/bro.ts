@@ -34,52 +34,15 @@ export class DeeplBrowser {
         await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
           waitUntil: 'networkidle'
         })
-        const resp = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim())
+        const respResult = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim())
 
-        if (resp?.translatedText) {
-          return resolve(resp)
+        if (respResult?.translatedText) {
+          return resolve(respResult)
         }
 
-        const el = await page.$('button.lmt__translations_as_text__text_btn')
-        if (el) {
-          const translatedText = await el.innerText()
-
-          if (translatedText) {
-            let hash = page.url().split('#')[1]
-
-            if (!hash) {
-              await this.typing(
-                page,
-                text
-                  .split(' ')
-                  .filter((x) => x?.trim())
-                  .slice(0, 10)
-                  .join(' ')
-              )
-
-              try {
-                await page.waitForURL((url: URL) => !!url.hash, {
-                  timeout: 5e3
-                })
-              } catch (e: any) {
-                // console.log(e)
-              }
-              hash = page.url().split('#')[1]
-            }
-
-            if (hash) {
-              const langs = hash.split('/')
-              if (langs.length === 3) {
-                return resolve({
-                  translatedText,
-                  source_lang: langs[0]?.toUpperCase(),
-                  target_lang: langs[1]?.toUpperCase()
-                })
-              }
-            }
-
-            return resolve({ translatedText })
-          }
+        const htmlResult = await this.getResultFromHtml(page, text)
+        if (htmlResult?.translatedText) {
+          return resolve(htmlResult)
         }
       } catch (e: any) {
         if (e?.message?.toLowerCase().includes('closed')) {
@@ -95,13 +58,21 @@ export class DeeplBrowser {
         }
         await sleep(5e3)
         await this.typing(page, text)
-        const resp = await this.getHandleJobsResult(inst.browser!, page!, text)
+        const respResult = await this.getHandleJobsResult(inst.browser!, page!, text)
 
-        if (resp?.translatedText) {
-          return resolve(resp)
+        if (respResult?.translatedText) {
+          return resolve(respResult)
+        }
+
+        const htmlResult = await this.getResultFromHtml(page, text)
+        if (htmlResult?.translatedText) {
+          return resolve(htmlResult)
         }
       } catch (e: any) {
-        //   console.log(e)
+        if (e?.message?.toLowerCase().includes('closed')) {
+          await Dotransa.closeInstance(inst.id)
+          return resolve(null)
+        }
       }
 
       return resolve(null)
@@ -153,6 +124,50 @@ export class DeeplBrowser {
     }
 
     return null
+  }
+
+  protected async getResultFromHtml(page: Page, text: string) {
+    const el = await page.$('button.lmt__translations_as_text__text_btn')
+    if (el) {
+      const translatedText = await el.innerText()
+
+      if (translatedText) {
+        let hash = page.url().split('#')[1]
+
+        if (!hash) {
+          await this.typing(
+            page,
+            text
+              .split(' ')
+              .filter((x) => x?.trim())
+              .slice(0, 10)
+              .join(' ')
+          )
+
+          try {
+            await page.waitForURL((url: URL) => !!url.hash, {
+              timeout: 5e3
+            })
+          } catch (e: any) {
+            // console.log(e)
+          }
+          hash = page.url().split('#')[1]
+        }
+
+        if (hash) {
+          const langs = hash.split('/')
+          if (langs.length === 3) {
+            return {
+              translatedText,
+              source_lang: langs[0]?.toUpperCase(),
+              target_lang: langs[1]?.toUpperCase()
+            }
+          }
+        }
+
+        return { translatedText }
+      }
+    }
   }
 
   protected async switchTargetLang(page: Page, lang: string) {
