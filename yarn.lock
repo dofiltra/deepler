@@ -517,13 +517,14 @@ dotenv@^10.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
-dprx-types@^1.0.38:
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/dprx-types/-/dprx-types-1.0.38.tgz#2814e630e18e0a019856b852336eb41efcc4e47f"
-  integrity sha512-cZc3IKOqmYQ+B4tCR28rOV2CBLpKAYObU7m7pH5Dy1zCqDpiEhykhS4RFL8Hi6vH/T6mCQVhFXqBsDXM88HG6w==
+dprx-types@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/dprx-types/-/dprx-types-1.1.0.tgz#818e6b18a9f33d912562e0649eceb48c37b32f6a"
+  integrity sha512-1tHtwRFcPSl5SpSZn9R9MjiWZGdUzovS0EbeksTw12y++wXIRkTlwMZq8WPH7XQ+yTZxXWd7dnWZihmt7wsmWA==
   dependencies:
     dotenv "^10.0.0"
     esm-requirer "^1.0.3"
+    make-fetch-happen "^9.1.0"
     time-helpers "^1.0.0"
 
 duplexer3@^0.1.4:
@@ -1143,10 +1144,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-playwright-core@=1.17.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.17.0.tgz#4bb36367ea890e337f6074b866065be6d3e7d66d"
-  integrity sha512-9ZzKZwmK6G7O9+jtvIurL8efIbJQu3oW0kI4uuNreY3O2jQDWH6xNnD27HCaJN1/tHnw/OmdUC2AmMDZv3vNhQ==
+playwright-core@=1.17.1:
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.17.1.tgz#a16e0f89284a0ed8ae6d77e1c905c84b8a2ba022"
+  integrity sha512-C3c8RpPiC3qr15fRDN6dx6WnUkPLFmST37gms2aoHPDRvp7EaGDPMMZPpqIm/QWB5J40xDrQCD4YYHz2nBTojQ==
   dependencies:
     commander "^8.2.0"
     debug "^4.1.1"
@@ -1166,11 +1167,11 @@ playwright-core@=1.17.0:
     yazl "^2.5.1"
 
 playwright@^1.16.3:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.17.0.tgz#ad9918888737a1f310027a1fe2fd27f86ddd5e7e"
-  integrity sha512-rBBrdj5+iYFBSsMa7glK3MBaxkcXxHN7uW6pY7PzTB7xtGFTfdK0h0BPB7/vWiVIGOvz4Hy9g2UJNaZDHkAmgA==
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.17.1.tgz#a6d63302ee40f41283c4bf869de261c4743a787c"
+  integrity sha512-DisCkW9MblDJNS3rG61p8LiLA2WA7IY/4A4W7DX4BphWe/HuWjKmGQptuk4NVIh5UuSwXpW/jaH2+ZgjHs3GMA==
   dependencies:
-    playwright-core "=1.17.0"
+    playwright-core "=1.17.1"
 
 pngjs@^5.0.0:
   version "5.0.0"
@@ -1547,9 +1548,9 @@ url-parse-lax@^3.0.0:
     prepend-http "^2.0.0"
 
 user-agents@^1.0.779:
-  version "1.0.852"
-  resolved "https://registry.yarnpkg.com/user-agents/-/user-agents-1.0.852.tgz#9e36d9b183809e3c91f5d69fd0c259325e97194d"
-  integrity sha512-zoYhEFuO9YfWf/NlcHbKRhjLSuvsJD4uMUzrZIKopre31DPyCPh/fcN/7pn8LwloUKFRLv5osRemJIdNXalXyA==
+  version "1.0.854"
+  resolved "https://registry.yarnpkg.com/user-agents/-/user-agents-1.0.854.tgz#5616b88cc1cbf725e2876fc7744776d1b8a3e311"
+  integrity sha512-+P3CtilezBMEPruROhjNa3Ilga8zz2Fd6wVt2DgL4fioJq19DOOA6fTlZP8t6OvH4yfMqrFOaUzBL9XcCHavpw==
   dependencies:
     dot-json "^1.2.2"
     lodash.clonedeep "^4.5.0"
