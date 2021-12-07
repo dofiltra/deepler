@@ -191,7 +191,7 @@ export class Dotransa {
           return
         }
         // debugger
-        await Proxifible.incProxy(proxyItem?.url(), Proxifible.limitPerProxy)
+        await Proxifible.changeUseCountProxy(proxyItem?.url(), Proxifible.limitPerProxy)
         await this.closeInstance(id)
       })
 

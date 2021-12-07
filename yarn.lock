@@ -117,10 +117,10 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@^16.11.11":
-  version "16.11.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.11.tgz#6ea7342dfb379ea1210835bada87b3c512120234"
-  integrity sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==
+"@types/node@*", "@types/node@^16.11.12":
+  version "16.11.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.12.tgz#ac7fb693ac587ee182c3780c26eb65546a1a3c10"
+  integrity sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==
 
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
@@ -517,10 +517,10 @@ dotenv@^10.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
-dprx-types@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/dprx-types/-/dprx-types-1.1.0.tgz#818e6b18a9f33d912562e0649eceb48c37b32f6a"
-  integrity sha512-1tHtwRFcPSl5SpSZn9R9MjiWZGdUzovS0EbeksTw12y++wXIRkTlwMZq8WPH7XQ+yTZxXWd7dnWZihmt7wsmWA==
+dprx-types@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/dprx-types/-/dprx-types-1.1.8.tgz#d1d64bb547b162281f930b3a9be52d24153bcf03"
+  integrity sha512-69sxYf1jpmU7fPyNXghPtl505odUns7nNn6GJkIlHXjuuPHe+iJDyIt62hORDZ3fTtcLKAl+dgMrZ0uDdE8Kzg==
   dependencies:
     dotenv "^10.0.0"
     esm-requirer "^1.0.3"
@@ -1183,10 +1183,10 @@ prepend-http@^2.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
-prettier@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.0.tgz#a6370e2d4594e093270419d9cc47f7670488f893"
-  integrity sha512-FM/zAKgWTxj40rH03VxzIPdXmj39SwSjwG0heUcNFwI+EMZJnY93yAiKXM3dObIKAM5TA88werc8T/EwhB45eg==
+prettier@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
+  integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
 
 progress@^2.0.3:
   version "2.0.3"
@@ -1548,9 +1548,9 @@ url-parse-lax@^3.0.0:
     prepend-http "^2.0.0"
 
 user-agents@^1.0.779:
-  version "1.0.854"
-  resolved "https://registry.yarnpkg.com/user-agents/-/user-agents-1.0.854.tgz#5616b88cc1cbf725e2876fc7744776d1b8a3e311"
-  integrity sha512-+P3CtilezBMEPruROhjNa3Ilga8zz2Fd6wVt2DgL4fioJq19DOOA6fTlZP8t6OvH4yfMqrFOaUzBL9XcCHavpw==
+  version "1.0.858"
+  resolved "https://registry.yarnpkg.com/user-agents/-/user-agents-1.0.858.tgz#b3439c731bbb959a3a371cb13e0338af7ca928c0"
+  integrity sha512-bQpBZoE3nTECOHD44r+xR2mq2DY9JAEhVoPlDPJaoqi2ohID3Uao6M8tl6LaZDm/GBRi5B/6dtAhx9WJhQB5Xw==
   dependencies:
     dot-json "^1.2.2"
     lodash.clonedeep "^4.5.0"

@@ -15,7 +15,7 @@ export class DeeplBrowser {
 
     const inst = await Dotransa.getInstance(TransType.DeBro)
     const page = inst?.page
-    Proxifible.incProxy(inst.proxyItem?.url())
+    Proxifible.changeUseCountProxy(inst.proxyItem?.url())
 
     const result: TTranslateResult | null = await new Promise(async (resolve) => {
       if (!page) {
@@ -26,7 +26,7 @@ export class DeeplBrowser {
       try {
         // const isPauseProxy = await this.isPauseProxy(page)
         // if (isPauseProxy) {
-        //   await Proxifible.incProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
+        //   await Proxifible.changeUseCountProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
         //   await Dotransa.closeInstance(inst.id)
         //   return resolve(null)
         // }
