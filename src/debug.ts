@@ -113,18 +113,18 @@ const debug = async () => {
   //   text: texts[0]
   // })
   // console.log(texts.length)
-  const proxies = [
-    new ProxyItem({
-      type: process.env.PROXY_TYPE,
-      ip: process.env.PROXY_IP!,
-      port: process.env.PROXY_PORT,
-      changeUrl: process.env.PROXY_CHANGE_URL!,
-      user: process.env.PROXY_USER,
-      pass: process.env.PROXY_PASS,
-      version: 4
-    } as ProxyItem)
-  ]
-  Proxifible.proxies = proxies
+  // const proxies = [
+  //   new ProxyItem({
+  //     type: process.env.PROXY_TYPE,
+  //     ip: process.env.PROXY_IP!,
+  //     port: process.env.PROXY_PORT,
+  //     changeUrl: process.env.PROXY_CHANGE_URL!,
+  //     user: process.env.PROXY_USER,
+  //     pass: process.env.PROXY_PASS,
+  //     version: 4
+  //   } as ProxyItem)
+  // ]
+  // Proxifible.proxies = proxies
 
   const dotransa = await Dotransa.build([
     {
