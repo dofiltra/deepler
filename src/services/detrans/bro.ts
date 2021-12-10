@@ -93,7 +93,7 @@ export class DeeplBrowser {
     return result
   }
 
-  // protected async isPauseProxy(page: Page) {
+  // protected async needPauseProxy(page: Page) {
   //   try {
   //     const hasBlockedContent = !!(await page.$('.lmt__notification__blocked'))
   //     return hasBlockedContent
@@ -119,8 +119,8 @@ export class DeeplBrowser {
 
         return { translatedText, source_lang, target_lang }
       }
-    } catch {
-      // log
+    } catch (error: any) {
+      // console.log(error)
     }
 
     return null
