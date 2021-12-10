@@ -35,11 +35,10 @@ export class Dotransa {
   protected static queue = new PQueue({ concurrency: 1 })
   protected static translateResults: { [id: string]: TTranslateResult } = {}
 
-  static async build(instanceOpts?: TInstanceOpts[], proxies?: ProxyItem[]) {
+  static async build(instanceOpts?: TInstanceOpts[]) {
     if (instanceOpts) {
       Dotransa.instanceOpts = instanceOpts
     }
-    Proxifible.proxies = proxies || []
     await this.createInstances()
 
     const queue = Dotransa.queue
