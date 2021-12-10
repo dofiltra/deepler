@@ -1403,6 +1403,15 @@ socks@^2.6.1:
     ip "^1.1.5"
     smart-buffer "^4.1.0"
 
+split-helper@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/split-helper/-/split-helper-1.0.5.tgz#156eb1309cf8b222eeb4a94065b208ff751f0ec5"
+  integrity sha512-ObYdu+AcsP+0THL06sBKGno6s/J2OPNZsndecAsXVJZD1UR7SU6x+pveTMdVSGffd6DyU6HfdRTP0w4Vg4/aUg==
+  dependencies:
+    is-running-process "^1.0.0"
+    lodash "^4.17.21"
+    time-helpers "^1.0.0"
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"

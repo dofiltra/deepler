@@ -4,9 +4,29 @@ import { sleep } from 'time-helpers'
 import { TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
 import { Dotransa } from '../..'
 import { Proxifible } from 'dprx-types'
+import { getSplittedTexts } from 'split-helper'
 
 export class DeeplBrowser {
+  protected limit = 4500
+
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
+    const splits = getSplittedTexts(opts.text, this.limit)
+    let translatedText = ''
+
+    for (const split of splits) {
+      const { translatedText: microTranslatedText } = await this.microTranslate({
+        ...opts,
+        text: split
+      })
+      translatedText += microTranslatedText
+    }
+
+    return {
+      translatedText
+    }
+  }
+
+  async microTranslate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const { text, targetLang, tryIndex = 0, tryLimit = 5 } = opts
 
     if (tryIndex >= tryLimit) {

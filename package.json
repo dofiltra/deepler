@@ -54,6 +54,7 @@
     "lodash": "^4.17.21",
     "make-fetch-happen": "^9.1.0",
     "p-queue": "^7.1.0",
+    "split-helper": "^1.0.5",
     "time-helpers": "^1.0.0",
     "translate-google": "^1.5.0",
     "tunnel": "^0.0.6"

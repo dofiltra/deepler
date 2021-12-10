@@ -6,7 +6,6 @@ import { DeeplBrowser, GTransApi } from '../..'
 import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanceOpts } from '../../types/trans'
 import { Proxifible } from 'dprx-types'
 import { BrowserManager, devices, Page } from 'browser-manager'
-import { ProxyItem } from 'dprx-types'
 import PQueue from 'p-queue'
 
 export class Dotransa {
