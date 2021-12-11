@@ -7,7 +7,7 @@ import { Proxifible } from 'dprx-types'
 import { getSplittedTexts } from 'split-helper'
 
 export class DeeplBrowser {
-  protected limit = 4500
+  protected limit = 3500
 
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const splits = getSplittedTexts(opts.text, this.limit)
