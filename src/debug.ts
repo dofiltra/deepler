@@ -4,7 +4,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { Dotransa } from '.'
-import { TransType } from './types/trans'
+import { TransMode, TransType } from './types/trans'
 
 const debug = async () => {
   const rootPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -78,62 +78,53 @@ const debug = async () => {
   `.split('\n')
   ]
 
-  // const gTranslateResultEn = await Promise.all(
-  //   enTexts.map(async (t) =>
-  //     new GTransApi({}).translate({
-  //       targetLang: 'RU',
-  //       text: t
-  //     })
-  //   )
-  // )
-
-  // const gTranslateResult = await Promise.all(
-  //   ruTexts.map(async (t) =>
-  //     new GTransApi({}).translate({
-  //       targetLang: 'EN',
-  //       text: t
-  //     })
-  //   )
-  // )
-  // debugger
-  // const fetchResult = await new DeeplFetch({
-  //   headless: false,
-  //   proxies: [
-  //     new ProxyItem({
-  //       type: 'socks5',
-  //       ip: '',
-  //       port: '11018',
-  //       user: '',
-  //       pass: '',
-  //       changeUrl: 'http://node-us-6.astroproxy.com:11017/api/changeIP?apiToken='
-  //     } as ProxyItem)
-  //   ]
-  // }).translate({
-  //   targetLang: 'EN',
-  //   text: texts[0]
-  // })
-  // console.log(texts.length)
-  // const proxies = [
-  //   new ProxyItem({
-  //     type: process.env.PROXY_TYPE,
-  //     ip: process.env.PROXY_IP!,
-  //     port: process.env.PROXY_PORT,
-  //     changeUrl: process.env.PROXY_CHANGE_URL!,
-  //     user: process.env.PROXY_USER,
-  //     pass: process.env.PROXY_PASS,
-  //     version: 4
-  //   } as ProxyItem)
-  // ]
-  // Proxifible.proxies = proxies
-
   const dotransa = await Dotransa.build([
     {
       maxPerUse: 1000,
-      maxInstance: 10,
+      maxInstance: 1,
       headless: false,
       type: TransType.DeBro
     }
   ])
+
+  const translateResult1 = await dotransa.translate({
+    text: `Если 2021 год был годом NFT, то следующим горячим трендом криптоиндустрии могут стать блокчейн-игры и метавселенные об этом говорит стремительный рост соответствующих проектов в последние месяцы.
+    
+    В результате серии торнадо в штате погибли 74 человека, более 100 числятся пропавшими без вести
+
+Президент США Джо Байден в среду посещает штат Кентукки, чтобы лично оценить ущерб от серии торнадо, в результате которых погибли не менее 74 человек.
+
+В ходе визита Байден ознакомится с последней информацией о ликвидации последствий ударов стихии, которые обрушились на штат в пятницу и субботу, и посетит два пострадавших от торнадо города – Мэйфилд и Доусон-Спрингс.
+
+В пятый раз с момента вступления в должность менее года назад президент Джо Байден берет на себя мрачную задачу - посетить район, разрушенный стихийным бедствием, чтобы высказать слова утешения и соболезнования.
+
+«Сегодняшнее послание президента состоит в том, что он и федеральное правительство намерены делать все, что потребуется, и (потратить) столько времени, сколько потребуется, предоставляя любую поддержку, которая необходима для содействия усилиям по восстановлению и для помощи жителям Кентукки и других пострадавших штатов». Об этом на борту президентского самолета Air Force One заявила в среду первый заместитель пресс-секретаря Белого дома Карин Жан-Пьер.
+
+Губернатор Кентукки Энди Бешир во вторник заявил, что в штате пропали без вести более 100 человек. Большинство пропавших проживали в городе Доусон-Спрингс, население которого составляет менее 3000 человек.
+
+Пресс-секретарь Белого дома Джен Псаки во вторник заявила журналистам, что Байден «хочет напрямую пообщаться с людьми и напрямую предложить им свою поддержку».
+
+«Завтра он постарается напрямую донести до них следующую мысль: "Мы здесь, чтобы помочь в восстановлении, мы будем рядом с вами и поможем вашим лидерам сделать именно это"», – сказала Псаки.
+
+Байден объявил режим чрезвычайной ситуации в Кентукки и соседних штатах Теннесси и Иллинойс после того, как штормы принесли более 30 торнадо в пять штатов. Всего погибло как минимум 88 человек.
+
+
+    `,
+    targetLang: 'RU',
+    tryLimit: 10,
+    mode: TransMode.Expand
+  })
+
+  const translateResult3 = await dotransa.translate({
+    text: translateResult1.translatedText,
+    //`If 2021 was the year of NFT, then the next hot trend in the crypto-industry could be blockchain games and meta-villages, as evidenced by the rapid growth of the respective projects in recent months. A series of tornadoes in the state has killed 74 people, and more than 100 are unaccounted for U.S. President Joe Biden is visiting Kentucky Wednesday to personally assess the damage from a series of tornadoes that have killed at least 74 people. During his visit, Biden will get an update on the aft…s Tuesday that Biden "wants to talk directly to people and offer his support directly to them." "Tomorrow he will try to communicate to them directly the following message: 'We are here to help in the recovery, we will be there for you and we will help your leaders do just that,'" Psaki said. Biden declared a state of emergency in Kentucky and neighboring states of Tennessee and Illinois after storms brought more than 30 tornadoes to the five states. A total of at least 88 people were killed.`,
+    targetLang: 'RU',
+    tryLimit: 10,
+    mode: TransMode.Expand
+  })
+
+  debugger
+
   const arr: any[] = []
   for (let i = 0; i < 1000; i++) {
     arr.push(

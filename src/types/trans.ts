@@ -20,9 +20,16 @@ export enum TransType {
   GoApi = 'goapi'
 }
 
+export enum TransMode {
+  Auto = 'auto',
+  Expand = 'expand',
+  Shorten = 'shorten'
+}
+
 export type TTranslateOpts = {
   text: string
   targetLang: string
+  mode?: TransMode
 
   maxOpenedBrowsers?: number
   tryLimit?: number
