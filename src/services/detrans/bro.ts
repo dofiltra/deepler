@@ -11,16 +11,28 @@ export class DeeplBrowser {
   protected limit = 3500
 
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
-    const splits = await this.getSplits(opts.text)
-    let translatedText = ''
+    const splits: string[] = await this.getSplits(opts.text)
+    const translatedText = (
+      await Promise.all(
+        splits.map(
+          async (split) =>
+            await this.microTranslate({
+              ...opts,
+              text: split
+            })
+        )
+      )
+    )
+      .map((x) => x.translatedText || '')
+      .join(' ')
 
-    for (const split of splits) {
-      const { translatedText: microTranslatedText } = await this.microTranslate({
-        ...opts,
-        text: split
-      })
-      translatedText += microTranslatedText + ' '
-    }
+    // for (const split of splits) {
+    //   const { translatedText: microTranslatedText } = await this.microTranslate({
+    //     ...opts,
+    //     text: split
+    //   })
+    //   translatedText += microTranslatedText + ' '
+    // }
 
     return {
       translatedText
@@ -240,67 +252,16 @@ export class DeeplBrowser {
       }
 
       const translatedText = translations.map((trans) => this.getBeam(trans.beams, mode)).join(' ')
-
       return translatedText
-
-      // const sentencesByIds: { [id: string]: string[] } = {}
-
-      // for (const trans of translations) {
-      //   const beam = this.getBeam(trans.beams, mode)
-      //   const sentence = beam.sentences[0]
-      //   const id = sentence.ids[0]
-
-      //   sentencesByIds[id] ||= []
-      //   sentencesByIds[id].push(sentence.text)
-      // }
-
-      // const translatedText = Object.keys(sentencesByIds)
-      //   .sort()
-      //   .map((id) => {})
-      //   .join(' ')
-
-      // return translatedText
-      // const translatedTexts = translations
-      //   .map((translation) => {
-      //     const beam = translation.beams[0]
-
-      //     if (beam.postprocessed_sentence) {
-      //       return beam.postprocessed_sentence
-      //     }
-
-      //     const sentence = beam.sentences?.length && beam.sentences[0]
-      //     if (sentence?.text) {
-      //       return sentence.text
-      //     }
-      //   })
-      //   .filter((text) => text)
-
-      // if (translations[0].beams[0].postprocessed_sentence) {
-      //   return translatedTexts.join(' ')
-      // }
-
-      // // if need join
-      // //  return translatedTexts.join(' ')
-
-      // if (mode === TransMode.Shorten) {
-      //   return _.orderBy(translatedTexts, 'length', 'asc')[0]
-      // }
-
-      // if (mode === TransMode.Expand) {
-      //   return _.orderBy(translatedTexts, 'length', 'desc')[0]
-      // }
-
-      // return _.shuffle(translatedTexts)[0]
     } catch (error: any) {
       // console.log(error)
-
       return null
     }
   }
 
   protected getBeam(beams: any[], mode: TransMode) {
     try {
-      const texts = beams.map((beam) => beam.sentences[0].text)
+      const texts = beams.map((beam) => beam.postprocessed_sentence || beam.sentences[0].text)
 
       if (mode === TransMode.Shorten) {
         return _.orderBy(texts, 'length', 'asc')[0]
