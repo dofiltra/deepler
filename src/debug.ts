@@ -117,13 +117,13 @@ const debug = async () => {
 
   const translateResult2 = await dotransa.translate({
     text: translateResult1.translatedText,
-    //`If 2021 was the year of NFT, then the next hot trend in the crypto-industry could be blockchain games and meta-villages, as evidenced by the rapid growth of the respective projects in recent months. A series of tornadoes in the state has killed 74 people, and more than 100 are unaccounted for U.S. President Joe Biden is visiting Kentucky Wednesday to personally assess the damage from a series of tornadoes that have killed at least 74 people. During his visit, Biden will get an update on the aft…s Tuesday that Biden "wants to talk directly to people and offer his support directly to them." "Tomorrow he will try to communicate to them directly the following message: 'We are here to help in the recovery, we will be there for you and we will help your leaders do just that,'" Psaki said. Biden declared a state of emergency in Kentucky and neighboring states of Tennessee and Illinois after storms brought more than 30 tornadoes to the five states. A total of at least 88 people were killed.`,
+    // `If 2021 was the year of NFT, then the next hot trend in the crypto-industry could be blockchain games and meta-villages, as evidenced by the rapid growth of the respective projects in recent months. A series of tornadoes in the state has killed 74 people, and more than 100 are unaccounted for U.S. President Joe Biden is visiting Kentucky Wednesday to personally assess the damage from a series of tornadoes that have killed at least 74 people. During his visit, Biden will get an update on the aft…s Tuesday that Biden "wants to talk directly to people and offer his support directly to them." "Tomorrow he will try to communicate to them directly the following message: 'We are here to help in the recovery, we will be there for you and we will help your leaders do just that,'" Psaki said. Biden declared a state of emergency in Kentucky and neighboring states of Tennessee and Illinois after storms brought more than 30 tornadoes to the five states. A total of at least 88 people were killed.`,
     targetLang: 'RU',
     tryLimit: 10,
     mode: TransMode.Expand
   })
 
-  debugger
+  // debugger
 
   const arr: any[] = []
   for (let i = 0; i < 1000; i++) {
