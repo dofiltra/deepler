@@ -4,7 +4,7 @@ import { sleep } from 'time-helpers'
 import { TransMode, TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
 import { Dotransa } from '../..'
 import { Proxifible } from 'dprx-types'
-import { getSplittedTexts } from 'split-helper'
+import { getSplittedTexts, groupByLimit } from 'split-helper'
 import { DoLangApi } from 'dofiltra_api'
 
 export class DeeplBrowser {
@@ -12,9 +12,11 @@ export class DeeplBrowser {
 
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
     const splits: string[] = await this.getSplits(opts.text)
+    const groupedSplits = groupByLimit(splits, this.limit)
+
     const translatedText = (
       await Promise.all(
-        splits.map(
+        groupedSplits.map(
           async (split) =>
             await this.microTranslate({
               ...opts,
@@ -279,14 +281,9 @@ export class DeeplBrowser {
   }
 
   protected async getSplits(text: string) {
-    const { result } = await DoLangApi.detect(text)
-    const lang = result?.length && result[0] && result[0].code
-
-    if (lang) {
-      const { result: splits } = await DoLangApi.sentences(text, lang)
-      if (splits?.length) {
-        return splits
-      }
+    const { result: splits } = await DoLangApi.sentences(text)
+    if (splits?.length) {
+      return splits
     }
 
     return getSplittedTexts(text, this.limit)
