@@ -145,7 +145,8 @@ export class DeeplBrowser {
     mode: TransMode = TransMode.Auto
   ) {
     try {
-      const searchText = text.split('.')[0]
+      const searchText = text
+      //.split('.')[0]
       const { result } = {
         ...(await pwrt.getRespResult<any>(page, 'LMT_handle_jobs', searchText))
       } as any
