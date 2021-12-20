@@ -146,7 +146,7 @@ export class DeeplBrowser {
   ) {
     try {
       const searchText = text
-      //.split('.')[0]
+      // .split('.')[0]
       const { result } = {
         ...(await pwrt.getRespResult<any>(page, 'LMT_handle_jobs', searchText))
       } as any
