@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import { BrowserManager, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
-import { TransMode, TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
+import { TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
 import { Dotransa } from '../..'
-import { Proxifible } from 'dprx-types'
+import { Proxifible, RewriteMode } from 'dprx-types'
 import { getSplittedTexts, groupByLimit } from 'split-helper'
 import { DoLangApi } from 'dofiltra_api'
 
@@ -42,7 +42,7 @@ export class DeeplBrowser {
   }
 
   async microTranslate(opts: TTranslateOpts): Promise<TTranslateResult> {
-    const { text, targetLang, tryIndex = 0, tryLimit = 5, mode = TransMode.Auto } = opts
+    const { text, targetLang, tryIndex = 0, tryLimit = 5, mode = RewriteMode.Rewrite } = opts
 
     if (tryIndex >= tryLimit) {
       return { translatedText: text }
@@ -142,7 +142,7 @@ export class DeeplBrowser {
     pwrt: BrowserManager,
     page: Page,
     text: string,
-    mode: TransMode = TransMode.Auto
+    mode: RewriteMode = RewriteMode.Rewrite
   ) {
     try {
       const searchText = text
@@ -248,7 +248,7 @@ export class DeeplBrowser {
     }
   }
 
-  protected getBeamTranslateText(translations: any[], mode: TransMode) {
+  protected getBeamTranslateText(translations: any[], mode: RewriteMode) {
     try {
       if (!translations?.length) {
         return null
@@ -262,14 +262,14 @@ export class DeeplBrowser {
     }
   }
 
-  protected getBeam(beams: any[], mode: TransMode) {
+  protected getBeam(beams: any[], mode: RewriteMode) {
     try {
       const texts = beams.map((beam) => beam.postprocessed_sentence || beam.sentences[0].text)
 
-      if (mode === TransMode.Shorten) {
+      if (mode === RewriteMode.Shorten) {
         return _.orderBy(texts, 'length', 'asc')[0]
       }
-      if (mode === TransMode.Expand) {
+      if (mode === RewriteMode.Longer) {
         return _.orderBy(texts, 'length', 'desc')[0]
       }
       return _.shuffle(texts)[0]

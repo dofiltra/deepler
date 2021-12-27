@@ -1,5 +1,5 @@
 import { BrowserManager, Page } from 'browser-manager'
-import { ProxyItem } from 'dprx-types'
+import { ProxyItem, RewriteMode } from 'dprx-types'
 
 export type TInstanceOpts = {
   type: TransType.DeBro | TransType.GoBro | TransType.YaBro
@@ -20,16 +20,10 @@ export enum TransType {
   GoApi = 'goapi'
 }
 
-export enum TransMode {
-  Auto = 'auto',
-  Expand = 'expand',
-  Shorten = 'shorten'
-}
-
 export type TTranslateOpts = {
   text: string
   targetLang: string
-  mode?: TransMode
+  mode?: RewriteMode
 
   maxOpenedBrowsers?: number
   tryLimit?: number
