@@ -67,7 +67,9 @@ export class DeeplBrowser {
         // }
 
         await page.goto(
-          `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)}`,
+          `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)
+            .replaceAll('%2F', '%5C%2F')
+            .replaceAll('%5C', '%5C%5C')}`,
           {
             waitUntil: 'networkidle'
           }
