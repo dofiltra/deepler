@@ -68,22 +68,49 @@ export class DeeplBrowser {
 
         await page.goto(
           `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)
-            .replaceAll('%2F', '%5C%2F')
-            .replaceAll('%5C', '%5C%5C')}`,
+            .replaceAll('%5C', '%5C%5C')
+            .replaceAll('%2F', '%5C%2F')}`,
           {
             waitUntil: 'networkidle'
           }
         )
-        const respResult = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim(), mode)
 
-        if (respResult?.translatedText) {
-          return resolve(respResult)
+        const raceResult = await Promise.race([
+          new Promise(async (race) => {
+            const respResult = await this.getHandleJobsResult(
+              inst.browser,
+              page,
+              text.replaceAll('\n', '').trim(),
+              mode
+            )
+            if (respResult?.translatedText) {
+              return race(respResult)
+            }
+          }),
+
+          new Promise(async (race) => {
+            await sleep(3e3)
+            const htmlResult = await this.getResultFromHtml(page, text)
+            if (htmlResult?.translatedText) {
+              return race(htmlResult)
+            }
+          })
+        ])
+
+        if (raceResult) {
+          return resolve(raceResult as TTranslateResult)
         }
 
-        const htmlResult = await this.getResultFromHtml(page, text)
-        if (htmlResult?.translatedText) {
-          return resolve(htmlResult)
-        }
+        // const respResult = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim(), mode)
+
+        // if (respResult?.translatedText) {
+        //   return resolve(respResult)
+        // }
+
+        // const htmlResult = await this.getResultFromHtml(page, text)
+        // if (htmlResult?.translatedText) {
+        //   return resolve(htmlResult)
+        // }
       } catch (e: any) {
         if (e?.message?.toLowerCase().includes('closed')) {
           await Dotransa.closeInstance(inst.id)
@@ -148,7 +175,7 @@ export class DeeplBrowser {
     page: Page,
     text: string,
     mode: RewriteMode = RewriteMode.Rewrite
-  ) {
+  ): Promise<TTranslateResult | null> {
     try {
       const searchText = text
       // .split('.')[0]
@@ -172,48 +199,48 @@ export class DeeplBrowser {
     return null
   }
 
-  protected async getResultFromHtml(page: Page, text: string) {
+  protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
     const el = await page.$('button.lmt__translations_as_text__text_btn')
-    if (el) {
-      const translatedText = await el.innerText()
+    const translatedText = await el?.innerText()
 
-      if (translatedText) {
-        let hash = page.url().split('#')[1]
+    if (!translatedText) {
+      return null
+    }
 
-        if (!hash) {
-          await this.typing(
-            page,
-            text
-              .split(' ')
-              .filter((x) => x?.trim())
-              .slice(0, 10)
-              .join(' ')
-          )
+    let hash = page.url().split('#')[1]
 
-          try {
-            await page.waitForURL((url: URL) => !!url.hash, {
-              timeout: 5e3
-            })
-          } catch (e: any) {
-            // console.log(e)
-          }
-          hash = page.url().split('#')[1]
-        }
+    if (!hash) {
+      await this.typing(
+        page,
+        text
+          .split(' ')
+          .filter((x) => x?.trim())
+          .slice(0, 10)
+          .join(' ')
+      )
 
-        if (hash) {
-          const langs = hash.split('/')
-          if (langs.length === 3) {
-            return {
-              translatedText,
-              source_lang: langs[0]?.toUpperCase(),
-              target_lang: langs[1]?.toUpperCase()
-            }
-          }
-        }
+      try {
+        await page.waitForURL((url: URL) => !!url.hash, {
+          timeout: 5e3
+        })
+      } catch (e: any) {
+        // console.log(e)
+      }
+      hash = page.url().split('#')[1]
+    }
 
-        return { translatedText }
+    if (hash) {
+      const langs = hash.split('/')
+      if (langs.length === 3) {
+        return {
+          translatedText,
+          source_lang: langs[0]?.toUpperCase(),
+          target_lang: langs[1]?.toUpperCase()
+        } as TTranslateResult
       }
     }
+
+    return { translatedText } as TTranslateResult
   }
 
   protected async switchTargetLang(page: Page, lang: string) {
