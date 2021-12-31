@@ -66,9 +66,12 @@ export class DeeplBrowser {
         //   return resolve(null)
         // }
 
-        await page.goto(`https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURI(text)}`, {
-          waitUntil: 'networkidle'
-        })
+        await page.goto(
+          `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)}`,
+          {
+            waitUntil: 'networkidle'
+          }
+        )
         const respResult = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim(), mode)
 
         if (respResult?.translatedText) {
