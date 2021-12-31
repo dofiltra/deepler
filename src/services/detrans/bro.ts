@@ -93,7 +93,7 @@ export class DeeplBrowser {
           }),
 
           new Promise(async (race) => {
-            await sleep(3e3)
+            await sleep(5e3)
             const htmlResult = await this.getResultFromHtml(page, text)
             if (htmlResult?.translatedText) {
               return race(htmlResult)
