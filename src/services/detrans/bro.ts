@@ -77,6 +77,10 @@ export class DeeplBrowser {
 
         const raceResult = await Promise.race([
           new Promise(async (race) => {
+            setTimeout(() => race(null), 15e3)
+          }),
+
+          new Promise(async (race) => {
             const respResult = await this.getHandleJobsResult(
               inst.browser,
               page,
