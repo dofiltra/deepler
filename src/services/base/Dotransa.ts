@@ -36,11 +36,11 @@ export class Dotransa {
 
   static async build(instanceOpts?: TInstanceOpts[]) {
     if (instanceOpts) {
-      Dotransa.instanceOpts = instanceOpts
+      this.instanceOpts = instanceOpts
     }
     await this.createInstances()
 
-    const queue = Dotransa.queue
+    const queue = this.queue
     // let activeCount = 0
     // let completedCount = 0
 
@@ -67,7 +67,7 @@ export class Dotransa {
       // console.log(`Dotransa queue is idle.  Size: ${queue.size}  Pending: ${queue.pending}`)
     })
 
-    return new Dotransa(true)
+    return new this(true)
   }
 
   protected static async createInstances() {
