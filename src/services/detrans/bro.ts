@@ -302,7 +302,7 @@ export class DeeplBrowser {
     try {
       const texts = beams.map((beam) => beam.postprocessed_sentence || beam.sentences[0].text)
 
-      if (mode === RewriteMode.Shorten) {
+      if (mode === RewriteMode.Shorter) {
         return _.orderBy(texts, 'length', 'asc')[0]
       }
       if (mode === RewriteMode.Longer) {
