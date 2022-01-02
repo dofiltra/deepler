@@ -231,7 +231,7 @@ export class Dotransa {
   }
 
   protected async translateQueue(
-    id: string,
+    queueId: string,
     opts: TTranslateOpts,
     priors: TransType[] = [TransType.DeBro, TransType.YaBro, TransType.GoApi]
   ) {
@@ -259,10 +259,10 @@ export class Dotransa {
       }
     }
 
-    Dotransa.translateResults[id] = result || { translatedText: opts.text }
+    Dotransa.translateResults[queueId] = result || { translatedText: opts.text }
 
     return {
-      translatedText: Dotransa.translateResults[id]?.translatedText,
+      translatedText: Dotransa.translateResults[queueId]?.translatedText,
       originalText: opts.text,
       targetLang: opts.targetLang
     }
