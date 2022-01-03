@@ -123,7 +123,7 @@ export class DeeplBrowser {
       }
 
       try {
-        await this.typing(page, text.slice(0, 10))
+        await this.typing(page, text.slice(0, 50))
         if (!page.url().includes(targetLang)) {
           await this.switchTargetLang(page, targetLang)
         }
