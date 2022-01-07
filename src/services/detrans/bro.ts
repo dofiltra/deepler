@@ -66,6 +66,7 @@ export class DeeplBrowser {
         //   return resolve(null)
         // }
 
+        // await sleep(500)
         await page.goto(
           `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)
             .replaceAll('%5C', '%5C%5C')
@@ -270,11 +271,11 @@ export class DeeplBrowser {
 
   protected async typing(page: Page, text: string) {
     try {
-      const isWin = process.platform === 'win32'
+      const isMac = process.platform === 'darwin'
       const sourceSelector = 'textarea.lmt__source_textarea'
 
       await page.click(sourceSelector)
-      await page.press(sourceSelector, isWin ? 'Control+KeyA' : 'Meta+KeyA')
+      await page.press(sourceSelector, isMac ? 'Meta+KeyA' : 'Control+KeyA')
       await page.press(sourceSelector, 'Backspace')
       await page.type(sourceSelector, text)
 
