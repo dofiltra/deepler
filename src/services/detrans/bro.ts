@@ -211,7 +211,7 @@ export class DeeplBrowser {
       return null
     }
 
-    let hash = page.url().split('#')[1]
+    const hash = page.url().split('#')[1]
 
     // if (!hash) {
     //   await this.typing(
