@@ -206,7 +206,17 @@ export class DeeplBrowser {
 
   protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
     const el = await page.$('button.lmt__translations_as_text__text_btn')
-    const translatedText = await el?.innerText()
+    let translatedText = await el?.innerText()
+
+    for (let i = 0; i < 10; i++) {
+      translatedText = await el?.innerText()
+
+      if (translatedText?.includes('[.')) {
+        await sleep(1e3)
+      } else {
+        break
+      }
+    }
 
     if (!translatedText) {
       return null
