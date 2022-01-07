@@ -66,7 +66,7 @@ export class DeeplBrowser {
         //   return resolve(null)
         // }
 
-        // await sleep(500)
+        await sleep(250)
         await page.goto(
           `https://www.deepl.com/translator#auto/${targetLang.toLowerCase()}/${encodeURIComponent(text)
             .replaceAll('%5C', '%5C%5C')
@@ -78,7 +78,7 @@ export class DeeplBrowser {
 
         const raceResult = await Promise.race([
           new Promise(async (race) => {
-            setTimeout(() => race(null), 15e3)
+            setTimeout(() => race(null), 20e3)
           }),
 
           new Promise(async (race) => {
@@ -94,7 +94,7 @@ export class DeeplBrowser {
           }),
 
           new Promise(async (race) => {
-            await sleep(5e3)
+            await sleep(10e3)
             const htmlResult = await this.getResultFromHtml(page, text)
             if (htmlResult?.translatedText) {
               return race(htmlResult)
