@@ -213,25 +213,25 @@ export class DeeplBrowser {
 
     let hash = page.url().split('#')[1]
 
-    if (!hash) {
-      await this.typing(
-        page,
-        text
-          .split(' ')
-          .filter((x) => x?.trim())
-          .slice(0, 10)
-          .join(' ')
-      )
+    // if (!hash) {
+    //   await this.typing(
+    //     page,
+    //     text
+    //       .split(' ')
+    //       .filter((x) => x?.trim())
+    //       .slice(0, 10)
+    //       .join(' ')
+    //   )
 
-      try {
-        await page.waitForURL((url: URL) => !!url.hash, {
-          timeout: 5e3
-        })
-      } catch (e: any) {
-        // console.log(e)
-      }
-      hash = page.url().split('#')[1]
-    }
+    //   try {
+    //     await page.waitForURL((url: URL) => !!url.hash, {
+    //       timeout: 5e3
+    //     })
+    //   } catch (e: any) {
+    //     // console.log(e)
+    //   }
+    //   hash = page.url().split('#')[1]
+    // }
 
     if (hash) {
       const langs = hash.split('/')
