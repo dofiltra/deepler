@@ -154,7 +154,7 @@ export class Dotransa {
   }
 
   protected static async createDeBro(opts: TInstanceOpts, newInstancesCount: number): Promise<void> {
-    const { headless, maxInstance = 1, maxPerUse = 100, liveMinutes = 10 } = opts
+    const { headless, maxPerUse = 100, liveMinutes = 10 } = opts
     const instanceLiveSec = liveMinutes * 60
 
     for (let i = 0; i < newInstancesCount; i++) {
