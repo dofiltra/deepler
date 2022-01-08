@@ -163,7 +163,7 @@ export class Dotransa {
         filterTypes: ['http', 'https']
       })
       const browser = await BrowserManager.build<BrowserManager>({
-        maxOpenedBrowsers: maxInstance,
+        maxOpenedBrowsers: Number.MAX_SAFE_INTEGER,
         launchOpts: {
           headless: headless !== false,
           proxy: proxyItem?.toPwrt()
