@@ -71,20 +71,20 @@ export class Dotransa {
   }
 
   protected static async createInstances() {
-    if (Dotransa.creatingInstances) {
-      while (Dotransa.creatingInstances) {
+    if (this.creatingInstances) {
+      while (this.creatingInstances) {
         await sleep(_.random(10e3, 15e3))
       }
 
-      if (Dotransa.instances.length) {
+      if (this.instances.length) {
         return
       }
     }
 
-    Dotransa.creatingInstances = true
-    for (const opts of Dotransa.instanceOpts) {
+    this.creatingInstances = true
+    for (const opts of this.instanceOpts) {
       const { type, maxInstance } = opts
-      const newInstanceCount = maxInstance - Dotransa.instances.filter((inst) => inst?.type === type).length
+      const newInstanceCount = maxInstance - this.instances.filter((inst) => inst?.type === type).length
 
       if (newInstanceCount < 1) {
         continue
@@ -92,7 +92,7 @@ export class Dotransa {
 
       switch (type) {
         case TransType.DeBro:
-          await Dotransa.createDeBro(opts, newInstanceCount)
+          await this.createDeBro(opts, newInstanceCount)
           break
         case TransType.GoBro:
           break
@@ -100,13 +100,13 @@ export class Dotransa {
           break
       }
     }
-    Dotransa.creatingInstances = false
+    this.creatingInstances = false
   }
 
   protected static async closeDeadInstances() {
-    Dotransa.instances = (
+    this.instances = (
       await Promise.all(
-        Dotransa.instances.map(async (inst) => {
+        this.instances.map(async (inst) => {
           try {
             const isLive = !!(await inst.browser.isLive())
             if (isLive && inst.usedCount < inst.maxPerUse) {
@@ -143,14 +143,14 @@ export class Dotransa {
   }
 
   static updateInstance(id: string, upd: any) {
-    const index = Dotransa.instances.findIndex((i) => i?.id === id)
-    Dotransa.instances[index] = { ...Dotransa.instances[index], ...upd }
+    const index = this.instances.findIndex((i) => i?.id === id)
+    this.instances[index] = { ...this.instances[index], ...upd }
   }
 
   static async closeInstance(id: string) {
-    const index = Dotransa.instances.findIndex((i) => i?.id === id)
-    await Dotransa.instances[index]?.browser?.close()
-    delete Dotransa.instances[index]
+    const index = this.instances.findIndex((i) => i?.id === id)
+    await this.instances[index]?.browser?.close()
+    delete this.instances[index]
   }
 
   protected static async createDeBro(opts: TInstanceOpts, newInstancesCount: number): Promise<void> {

@@ -25,7 +25,6 @@ export type TTranslateOpts = {
   targetLang: string
   mode?: RewriteMode
 
-  maxOpenedBrowsers?: number
   tryLimit?: number
   tryIndex?: number
 }
