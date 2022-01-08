@@ -176,7 +176,7 @@ export class Dotransa {
         url: `https://www.deepl.com/translator`,
         waitUntil: 'networkidle',
         blackList: {
-          resourceTypes: ['stylesheet', 'image']
+          resourceTypes: ['stylesheet', 'image', 'media']
         }
       })) as Page
 
