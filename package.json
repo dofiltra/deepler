@@ -49,7 +49,7 @@
     "browser-manager": "^1.1.18",
     "dofiltra_api": "^1.1.40",
     "dotenv": "^10.0.0",
-    "dprx-types": "^1.1.16",
+    "dprx-types": "^1.1.17",
     "is-running-process": "^1.0.0",
     "lodash": "^4.17.21",
     "make-fetch-happen": "^9.1.0",
