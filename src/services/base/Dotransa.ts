@@ -157,55 +157,61 @@ export class Dotransa {
     const { headless, maxPerUse = 100, liveMinutes = 10 } = opts
     const instanceLiveSec = liveMinutes * 60
 
-    for (let i = 0; i < newInstancesCount; i++) {
-      const id = crypto.randomBytes(16).toString('hex')
-      const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
-      const proxyItem = await Proxifible.getProxy({
-        filterTypes: ['http', 'https'],
-        sortBy: Math.random() > 0.75 ? sortBy : sortBy.reverse()
-      })
-      const browser = await BrowserManager.build<BrowserManager>({
-        maxOpenedBrowsers: Number.MAX_SAFE_INTEGER,
-        launchOpts: {
-          headless: headless !== false,
-          proxy: proxyItem?.toPwrt()
-        },
-        device: devices['Pixel 5'],
-        lockCloseFirst: instanceLiveSec,
-        idleCloseSeconds: instanceLiveSec
-      })
-      const page = (await browser!.newPage({
-        url: `https://www.deepl.com/translator`,
-        waitUntil: 'networkidle',
-        blackList: {
-          resourceTypes: ['stylesheet', 'image', 'media']
-        }
-      })) as Page
+    await Promise.all(
+      new Array(...new Array(newInstancesCount)).map(async () => {
+        console.log(`Dotransa: Creating instance...`)
 
-      if (!browser || !page) {
-        continue
-      }
+        const id = crypto.randomBytes(16).toString('hex')
+        const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
+        const proxyItem = await Proxifible.getProxy({
+          filterTypes: ['http', 'https'],
+          sortBy: Math.random() > 0.75 ? sortBy : sortBy.reverse()
+        })
+        const browser = await BrowserManager.build<BrowserManager>({
+          maxOpenedBrowsers: Number.MAX_SAFE_INTEGER,
+          launchOpts: {
+            headless: headless !== false,
+            proxy: proxyItem?.toPwrt()
+          },
+          device: devices['Pixel 5'],
+          lockCloseFirst: instanceLiveSec,
+          idleCloseSeconds: instanceLiveSec
+        })
+        const page = (await browser!.newPage({
+          url: `https://www.deepl.com/translator`,
+          waitUntil: 'networkidle',
+          blackList: {
+            resourceTypes: ['stylesheet', 'image', 'media']
+          }
+        })) as Page
 
-      page.on('response', async (response) => {
-        if (response.status() !== 429) {
+        if (!browser || !page) {
           return
         }
-        // debugger
-        await Proxifible.changeUseCountProxy(proxyItem?.url(), Proxifible.limitPerProxy)
-        await this.closeInstance(id)
-      })
 
-      Dotransa.instances.push({
-        id,
-        type: TransType.DeBro,
-        idle: true,
-        usedCount: 0,
-        maxPerUse,
-        browser,
-        page,
-        proxyItem
-      } as TBrowserInstance)
-    }
+        page.on('response', async (response) => {
+          if (response.status() !== 429) {
+            return
+          }
+          // debugger
+          await Proxifible.changeUseCountProxy(proxyItem?.url(), Proxifible.limitPerProxy)
+          await this.closeInstance(id)
+        })
+
+        console.log(`Dotransa: Instance #${this.instances.length + 1} of ${opts.maxInstance}`)
+
+        Dotransa.instances.push({
+          id,
+          type: TransType.DeBro,
+          idle: true,
+          usedCount: 0,
+          maxPerUse,
+          browser,
+          page,
+          proxyItem
+        } as TBrowserInstance)
+      })
+    )
   }
 
   constructor(isBuild: boolean) {
