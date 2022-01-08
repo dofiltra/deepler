@@ -158,7 +158,8 @@ export class Dotransa {
     const instanceLiveSec = liveMinutes * 60
 
     await Promise.all(
-      new Array(...new Array(newInstancesCount)).map(async () => {
+      new Array(...new Array(newInstancesCount)).map(async (x, i) => {
+        await sleep(i * 1000)
         console.log(`Dotransa: Creating instance...`)
 
         const id = crypto.randomBytes(16).toString('hex')
