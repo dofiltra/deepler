@@ -201,7 +201,7 @@ export class Dotransa {
 
         console.log(`Dotransa: Instance #${this.instances.length + 1} of ${opts.maxInstance}`)
 
-        Dotransa.instances.push({
+        this.instances.push({
           id,
           type: TransType.DeBro,
           idle: true,
