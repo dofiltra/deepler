@@ -53,7 +53,7 @@ export class DeeplBrowser {
     Proxifible.changeUseCountProxy(inst.proxyItem?.url())
 
     const result: TTranslateResult | null = await new Promise(async (resolve) => {
-      if (!page) {
+      if (!page || page.isClosed()) {
         await sleep((tryIndex + 1) * 1000)
         return resolve(null)
       }
@@ -105,17 +105,6 @@ export class DeeplBrowser {
         if (raceResult) {
           return resolve(raceResult as TTranslateResult)
         }
-
-        // const respResult = await this.getHandleJobsResult(inst.browser!, page!, text.replaceAll('\n', '').trim(), mode)
-
-        // if (respResult?.translatedText) {
-        //   return resolve(respResult)
-        // }
-
-        // const htmlResult = await this.getResultFromHtml(page, text)
-        // if (htmlResult?.translatedText) {
-        //   return resolve(htmlResult)
-        // }
       } catch (e: any) {
         if (e?.message?.toLowerCase().includes('closed')) {
           await Dotransa.closeInstance(inst.id)

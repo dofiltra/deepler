@@ -46,21 +46,12 @@ export class Dotransa {
 
     queue.concurrency = instanceOpts?.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0) || 1
     queue.on('active', () => {
-      // console.log(
-      //   `Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${
-      //     queue.pending
-      //   } | Date: ${new Date().toJSON()}`
-      // )
+      // console.log(`Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${queue.pending} | Date: ${new Date().toJSON()}`)
     })
     queue.on('completed', (result) => {
-      // if (result?.targetLang) {
-      //   console.log(
-      //     `#${++completedCount} Dotransa completed | Date: ${new Date().toJSON()}\n`,
-      //     result?.originalText?.slice(0, 30),
-      //     ' --> ',
-      //     result?.translatedText?.slice(0, 30)
+      //   console.log(`#${++completedCount} Dotransa completed | Date: ${new Date().toJSON()}\n`,
+      //     result?.originalText?.slice(0, 30), ' --> ', result?.translatedText?.slice(0, 30)
       //   )
-      // }
     })
     queue.on('error', (error) => console.log('\n---\nDotransa error', error))
     queue.on('idle', async () => {
@@ -136,7 +127,7 @@ export class Dotransa {
       return inst
     }
 
-    await sleep(_.random(5e3, 10e3))
+    await sleep(_.random(3e3, 7e3))
     await this.closeDeadInstances()
     await this.createInstances()
     return await this.getInstance(type)
