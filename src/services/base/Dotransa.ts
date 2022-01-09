@@ -9,8 +9,9 @@ import { BrowserManager, devices, Page } from 'browser-manager'
 import PQueue from 'p-queue'
 
 export class Dotransa {
+  static instances: TBrowserInstance[] = []
+
   protected static creatingInstances = false
-  protected static instances: TBrowserInstance[] = []
   protected static instanceOpts: TInstanceOpts[] = [
     {
       type: TransType.DeBro,
@@ -177,7 +178,8 @@ export class Dotransa {
           }
         })) as Page
 
-        if (!browser || !page) {
+        if (!browser || !page || page.isClosed()) {
+          await Proxifible.changeUseCountProxy(proxyItem?.url(), Proxifible.limitPerProxy)
           return
         }
 
