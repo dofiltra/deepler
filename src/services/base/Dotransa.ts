@@ -154,17 +154,30 @@ export class Dotransa {
     const { headless, maxPerUse = 100, liveMinutes = 10 } = opts
     const instanceLiveSec = liveMinutes * 60
 
+    const isDynamicMode = _.random(true) > 0.9
+    const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
+    const sortOrder: ('asc' | 'desc')[] = [isDynamicMode ? 'asc' : 'desc', 'asc']
+    const proxies = await Proxifible.getProxies(
+      {
+        filterTypes: ['http', 'https'],
+        filterVersions: [4],
+        sortBy,
+        sortOrder
+      },
+      newInstancesCount
+    )
+
     await Promise.all(
       new Array(...new Array(newInstancesCount)).map(async (x, i) => {
         await sleep(i * 2000)
         console.log(`Dotransa: Creating instance...`)
 
+        const proxyItem = proxies[i]
+        if (!proxyItem) {
+          return
+        }
+
         const id = crypto.randomBytes(16).toString('hex')
-        const sortBy: ('changeUrl' | 'useCount')[] = ['useCount']
-        const proxyItem = await Proxifible.getProxy({
-          filterTypes: ['http', 'https'],
-          sortBy
-        })
         const browser = await BrowserManager.build<BrowserManager>({
           maxOpenedBrowsers: Number.MAX_SAFE_INTEGER,
           launchOpts: {
