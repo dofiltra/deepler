@@ -39,6 +39,11 @@ export class Dotransa {
     if (instanceOpts) {
       this.instanceOpts = instanceOpts
     }
+
+    if (!Proxifible.proxies.length) {
+      await Proxifible.loadProxies()
+    }
+
     await this.createInstances()
 
     const queue = this.queue
