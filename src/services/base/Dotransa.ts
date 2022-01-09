@@ -163,10 +163,10 @@ export class Dotransa {
         console.log(`Dotransa: Creating instance...`)
 
         const id = crypto.randomBytes(16).toString('hex')
-        const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
+        const sortBy: ('changeUrl' | 'useCount')[] = ['useCount']
         const proxyItem = await Proxifible.getProxy({
           filterTypes: ['http', 'https'],
-          sortBy: Math.random() > 0.75 ? sortBy : sortBy.reverse()
+          sortBy
         })
         const browser = await BrowserManager.build<BrowserManager>({
           maxOpenedBrowsers: Number.MAX_SAFE_INTEGER,
