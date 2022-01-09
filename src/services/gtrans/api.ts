@@ -22,7 +22,7 @@ export class GTransApi {
     }
 
     try {
-      const proxy = await Proxifible.getProxy()
+      const proxy = await Proxifible.getProxy({})
       if (proxy) {
         const proxyTunnel = {
           host: proxy.ip,
