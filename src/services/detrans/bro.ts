@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 import _ from 'lodash'
 import { BrowserManager, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
