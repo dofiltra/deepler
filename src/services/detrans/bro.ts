@@ -106,10 +106,8 @@ export class DeeplBrowser {
           return resolve(raceResult as TTranslateResult)
         }
       } catch (e: any) {
-        if (e?.message?.toLowerCase().includes('closed')) {
-          await Dotransa.closeInstance(inst.id)
-          return resolve(null)
-        }
+        console.log(e)
+        return resolve(null)
       }
 
       try {
@@ -130,19 +128,22 @@ export class DeeplBrowser {
           return resolve(htmlResult)
         }
       } catch (e: any) {
-        if (e?.message?.toLowerCase().includes('closed')) {
-          await Dotransa.closeInstance(inst.id)
-          return resolve(null)
-        }
+        console.log(e)
+        return resolve(null)
       }
 
       return resolve(null)
     })
 
-    Dotransa.updateInstance(inst.id, {
-      idle: true,
-      usedCount: inst.usedCount + 1
-    })
+    if (inst.page?.isClosed()) {
+      Proxifible.changeUseCountProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
+      await Dotransa.closeInstance(inst.id)
+    } else {
+      Dotransa.updateInstance(inst.id, {
+        idle: true,
+        usedCount: inst.usedCount + 1
+      })
+    }
 
     if (!result) {
       return await this.translate({
