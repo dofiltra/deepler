@@ -4,7 +4,7 @@ import crypto from 'crypto'
 import { sleep } from 'time-helpers'
 import { DeeplBrowser, GTransApi } from '../..'
 import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanceOpts } from '../../types/trans'
-import { Proxifible } from 'dprx-types'
+import { Proxifible } from 'dofiltra_api'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import PQueue from 'p-queue'
 

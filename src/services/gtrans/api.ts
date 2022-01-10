@@ -1,7 +1,7 @@
 import gapiLight from 'translate-google'
 import gapiWithProxy from '@vitalets/google-translate-api'
 import tunnel from 'tunnel'
-import { Proxifible } from 'dprx-types'
+import { Proxifible } from 'dofiltra_api'
 import { TTranslateOpts, TTranslateResult } from '../../types/trans'
 
 export class GTransApi {

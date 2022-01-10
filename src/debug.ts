@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { ProxyItem, Proxifible, RewriteMode } from 'dprx-types'
+import { RewriteMode } from 'dprx-types'
 import path from 'path'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'

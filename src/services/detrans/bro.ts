@@ -3,9 +3,9 @@ import { BrowserManager, Page } from 'browser-manager'
 import { sleep } from 'time-helpers'
 import { TransType, TTranslateOpts, TTranslateResult } from '../../types/trans'
 import { Dotransa } from '../..'
-import { Proxifible, RewriteMode } from 'dprx-types'
+import { RewriteMode } from 'dprx-types'
 import { getSplittedTexts, groupByLimit } from 'split-helper'
-import { DoLangApi } from 'dofiltra_api'
+import { Proxifible, DoLangApi } from 'dofiltra_api'
 
 export class DeeplBrowser {
   protected limit = 3500
