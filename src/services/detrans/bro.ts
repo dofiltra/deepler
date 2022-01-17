@@ -254,7 +254,7 @@ export class DeeplBrowser {
 
       return { translatedText } as TTranslateResult
     } catch (e: any) {
-      // 
+      //
     }
 
     return null
