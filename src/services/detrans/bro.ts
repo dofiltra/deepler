@@ -197,57 +197,65 @@ export class DeeplBrowser {
   }
 
   protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
-    const el = await page.$('button.lmt__translations_as_text__text_btn')
-    let translatedText = await el?.innerText()
-
-    for (let i = 0; i < 10; i++) {
-      translatedText = await el?.innerText()
-
-      if (translatedText?.includes('[.')) {
-        await sleep(1e3)
-      } else {
-        break
+    try {
+      if (page?.isClosed()) {
+        return null
       }
-    }
 
-    if (!translatedText) {
-      return null
-    }
+      const el = await page?.$('button.lmt__translations_as_text__text_btn')
+      let translatedText = await el?.innerText()
 
-    const hash = page.url().split('#')[1]
+      for (let i = 0; i < 10; i++) {
+        translatedText = await el?.innerText()
 
-    // if (!hash) {
-    //   await this.typing(
-    //     page,
-    //     text
-    //       .split(' ')
-    //       .filter((x) => x?.trim())
-    //       .slice(0, 10)
-    //       .join(' ')
-    //   )
-
-    //   try {
-    //     await page.waitForURL((url: URL) => !!url.hash, {
-    //       timeout: 5e3
-    //     })
-    //   } catch (e: any) {
-    //     // console.log(e)
-    //   }
-    //   hash = page.url().split('#')[1]
-    // }
-
-    if (hash) {
-      const langs = hash.split('/')
-      if (langs.length === 3) {
-        return {
-          translatedText,
-          source_lang: langs[0]?.toUpperCase(),
-          target_lang: langs[1]?.toUpperCase()
-        } as TTranslateResult
+        if (translatedText?.includes('[.')) {
+          await sleep(1e3)
+        } else {
+          break
+        }
       }
-    }
 
-    return { translatedText } as TTranslateResult
+      if (!translatedText) {
+        return null
+      }
+
+      const hash = page.url().split('#')[1]
+
+      // if (!hash) {
+      //   await this.typing(
+      //     page,
+      //     text
+      //       .split(' ')
+      //       .filter((x) => x?.trim())
+      //       .slice(0, 10)
+      //       .join(' ')
+      //   )
+
+      //   try {
+      //     await page.waitForURL((url: URL) => !!url.hash, {
+      //       timeout: 5e3
+      //     })
+      //   } catch (e: any) {
+      //     // console.log(e)
+      //   }
+      //   hash = page.url().split('#')[1]
+      // }
+
+      if (hash) {
+        const langs = hash.split('/')
+        if (langs.length === 3) {
+          return {
+            translatedText,
+            source_lang: langs[0]?.toUpperCase(),
+            target_lang: langs[1]?.toUpperCase()
+          } as TTranslateResult
+        }
+      }
+
+      return { translatedText } as TTranslateResult
+    } catch (e: any) {}
+
+    return null
   }
 
   protected async switchTargetLang(page: Page, lang: string) {
