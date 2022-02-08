@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-/* tslint:disable:no-debug */
+/* tslint:disable:no-debugger */
 import { RewriteMode } from 'dprx-types'
 import path from 'path'
 import dotenv from 'dotenv'
