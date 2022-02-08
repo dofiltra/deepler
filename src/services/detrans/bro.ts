@@ -52,7 +52,7 @@ export class DeeplBrowser {
 
     const inst = await Dotransa.getInstance(TransType.DeBro)
     const page = inst?.page
-    Proxifible.changeUseCountProxy(inst.proxyItem?.url())
+    await Proxifible.changeUseCountProxy(inst.proxyItem?.url())
 
     const result: TTranslateResult | null = await new Promise(async (resolve) => {
       if (!page || page.isClosed()) {
@@ -80,7 +80,7 @@ export class DeeplBrowser {
 
         const raceResult = await Promise.race([
           new Promise(async (race) => {
-            setTimeout(() => race(null), 20e3)
+            setTimeout(() => race(null), 30e3)
           }),
 
           new Promise(async (race) => {
@@ -138,7 +138,7 @@ export class DeeplBrowser {
     })
 
     if (inst.page?.isClosed()) {
-      Proxifible.changeUseCountProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
+      await Proxifible.changeUseCountProxy(inst.proxyItem?.url(), Proxifible.limitPerProxy)
       await Dotransa.closeInstance(inst.id)
     } else {
       Dotransa.updateInstance(inst.id, {

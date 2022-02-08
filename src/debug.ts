@@ -1,4 +1,5 @@
 /* tslint:disable:no-console */
+/* tslint:disable:no-debug */
 import { RewriteMode } from 'dprx-types'
 import path from 'path'
 import dotenv from 'dotenv'
@@ -81,7 +82,7 @@ const debug = async () => {
   const dotransa = await Dotransa.build([
     {
       maxPerUse: 1000,
-      maxInstance: 5,
+      maxInstance: 1,
       headless: false,
       type: TransType.DeBro
     }
@@ -123,7 +124,7 @@ const debug = async () => {
     mode: RewriteMode.Longer
   })
 
-  // debugger
+  debugger
 
   const arr: any[] = []
   for (let i = 0; i < 1000; i++) {
