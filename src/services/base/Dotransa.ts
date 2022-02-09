@@ -44,7 +44,7 @@ export class Dotransa {
       await Proxifible.loadProxies()
     }
 
-    await this.createInstances()
+    // await this.createInstances()
 
     const queue = this.queue
     // let activeCount = 0
@@ -151,7 +151,7 @@ export class Dotransa {
   }
 
   protected static async createDeBro(opts: TInstanceOpts, newInstancesCount: number): Promise<void> {
-    const { headless, maxPerUse = 100, liveMinutes = 10 } = opts
+    const { headless, maxPerUse = 100, liveMinutes = 10, maxInstance = 0 } = opts
     const instanceLiveSec = liveMinutes * 60
 
     const isDynamicMode = _.random(true) > 0.9
@@ -163,7 +163,8 @@ export class Dotransa {
         filterVersions: [4],
         sortBy,
         sortOrder,
-        forceChangeIp: true
+        forceChangeIp: true,
+        maxUseCount: Number.MAX_SAFE_INTEGER
       },
       newInstancesCount
     )
@@ -171,7 +172,7 @@ export class Dotransa {
     await Promise.all(
       new Array(...new Array(newInstancesCount)).map(async (x, i) => {
         await sleep(i * 2000)
-        console.log(`Dotransa: Creating instance...`)
+        console.log(`Dotransa: Creating #${i} of ${maxInstance} | Instances = [${this.instances.length}]...`)
 
         const proxyItem = proxies[i]
         if (!proxyItem) {
@@ -211,7 +212,7 @@ export class Dotransa {
           await this.closeInstance(id)
         })
 
-        console.log(`Dotransa: Instance #${this.instances.length + 1} of ${opts.maxInstance}`)
+        console.log(`Dotransa: Success instance #${this.instances.length + 1} of ${maxInstance}`)
 
         this.instances.push({
           id,
