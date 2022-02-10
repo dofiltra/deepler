@@ -92,7 +92,7 @@ export class Dotransa {
 
   protected static async createInstances() {
     while (this.creatingInstances) {
-      await sleep(_.random(2e3, 10e3))
+      await sleep(_.random(1e3, 10e3))
     }
 
     this.creatingInstances = true
@@ -150,7 +150,7 @@ export class Dotransa {
       return inst
     }
 
-    await sleep(_.random(3e3, 7e3))
+    await sleep(_.random(1e3, 3e3))
     await this.closeDeadInstances()
     await this.createInstances()
     return await this.getInstance(type)
@@ -174,7 +174,9 @@ export class Dotransa {
     await Promise.all(
       new Array(...new Array(newInstancesCount)).map(async (x, i) => {
         await sleep(i * 2000)
-        console.log(`Dotransa: Creating #${i} of ${maxInstance} | Instances = [${this.instances.length}]...`)
+        console.log(
+          `Dotransa: Creating #${this.instances.length + 1} of ${maxInstance} | Instances = [${this.instances.length}]`
+        )
 
         const proxyItem = await this.getAvailableProxy()
 
@@ -225,7 +227,8 @@ export class Dotransa {
           page,
           proxyItem
         } as TBrowserInstance)
-        console.log(`Dotransa: Success instance #${this.instances.length} of ${maxInstance}`)
+
+        console.log(`Dotransa: Success #${this.instances.length} of ${maxInstance}`)
       })
     )
   }

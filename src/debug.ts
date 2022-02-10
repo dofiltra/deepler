@@ -82,7 +82,7 @@ const debug = async () => {
   const dotransa = await Dotransa.build([
     {
       maxPerUse: 1000,
-      maxInstance: 1,
+      maxInstance: 10,
       headless: false,
       type: TransType.DeBro
     }
@@ -127,7 +127,7 @@ const debug = async () => {
   debugger
 
   const arr: any[] = []
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 10; i++) {
     arr.push(
       ...[
         ...ruTexts
@@ -139,7 +139,7 @@ const debug = async () => {
               tryLimit: 10
             })
 
-            // console.log(++counter, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
+            console.log(i, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
 
             return { translateResult, text: t }
           }),
@@ -153,7 +153,7 @@ const debug = async () => {
               tryLimit: 1
             })
 
-            // console.log(++counter, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
+            console.log(i, t.slice(0, 30), ' --> ', translateResult?.translatedText?.slice(0, 30))
 
             return { translateResult, text: t }
           })
@@ -162,7 +162,7 @@ const debug = async () => {
   }
 
   const a = await Promise.all(arr)
-  // debugger
+  debugger
   // console.log(a)
 }
 
