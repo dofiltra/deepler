@@ -78,7 +78,7 @@ export class Dotransa {
         sortBy,
         sortOrder,
         forceChangeIp: true,
-        maxUseCount: 200
+        maxUseCount: 1e3
       },
       Number.MAX_SAFE_INTEGER
     )
