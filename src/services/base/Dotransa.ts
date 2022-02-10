@@ -7,6 +7,7 @@ import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanc
 import { Proxifible } from 'dofiltra_api'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import PQueue from 'p-queue'
+import { ProxyItem } from 'dprx-types'
 
 export class Dotransa {
   static instances: TBrowserInstance[] = []
@@ -34,17 +35,15 @@ export class Dotransa {
   ]
   protected static queue = new PQueue({ concurrency: 1 })
   protected static translateResults: { [id: string]: TTranslateResult } = {}
+  protected static proxies: ProxyItem[] = []
 
   static async build(instanceOpts?: TInstanceOpts[]) {
     if (instanceOpts) {
       this.instanceOpts = instanceOpts
     }
 
-    if (!Proxifible.proxies.length) {
-      await Proxifible.loadProxies()
-    }
-
     // await this.createInstances()
+    await this.updateProxies()
 
     const queue = this.queue
     // let activeCount = 0
@@ -67,15 +66,33 @@ export class Dotransa {
     return new this(true)
   }
 
-  protected static async createInstances() {
-    if (this.creatingInstances) {
-      while (this.creatingInstances) {
-        await sleep(_.random(10e3, 15e3))
-      }
+  protected static async updateProxies() {
+    const isDynamicMode = false // _.random(true) > 0.9
+    const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
+    const sortOrder: ('asc' | 'desc')[] = [isDynamicMode ? 'asc' : 'desc', 'asc']
 
-      if (this.instances.length) {
-        return
-      }
+    this.proxies = await Proxifible.getProxies(
+      {
+        filterTypes: ['http', 'https'],
+        filterVersions: [4],
+        sortBy,
+        sortOrder,
+        forceChangeIp: true,
+        maxUseCount: 200
+      },
+      Number.MAX_SAFE_INTEGER
+    )
+  }
+
+  protected static async getAvailableProxy() {
+    const busyProxies = this.instances.filter((inst) => inst.proxyItem).map((inst) => inst.proxyItem?.url())
+
+    return this.proxies.find((p) => !busyProxies.includes(p.url()))
+  }
+
+  protected static async createInstances() {
+    while (this.creatingInstances) {
+      await sleep(_.random(2e3, 10e3))
     }
 
     this.creatingInstances = true
@@ -89,7 +106,7 @@ export class Dotransa {
 
       switch (type) {
         case TransType.DeBro:
-          await this.createDeBro(opts, newInstanceCount)
+          await this.createDeBro(opts, 1) // newInstanceCount
           break
         case TransType.GoBro:
           break
@@ -154,27 +171,13 @@ export class Dotransa {
     const { headless, maxPerUse = 100, liveMinutes = 10, maxInstance = 0 } = opts
     const instanceLiveSec = liveMinutes * 60
 
-    const isDynamicMode = _.random(true) > 0.9
-    const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
-    const sortOrder: ('asc' | 'desc')[] = [isDynamicMode ? 'asc' : 'desc', 'asc']
-    const proxies = await Proxifible.getProxies(
-      {
-        filterTypes: ['http', 'https'],
-        filterVersions: [4],
-        sortBy,
-        sortOrder,
-        forceChangeIp: true,
-        maxUseCount: Number.MAX_SAFE_INTEGER
-      },
-      newInstancesCount
-    )
-
     await Promise.all(
       new Array(...new Array(newInstancesCount)).map(async (x, i) => {
         await sleep(i * 2000)
         console.log(`Dotransa: Creating #${i} of ${maxInstance} | Instances = [${this.instances.length}]...`)
 
-        const proxyItem = proxies[i]
+        const proxyItem = await this.getAvailableProxy()
+
         if (!proxyItem) {
           return
         }
@@ -212,8 +215,6 @@ export class Dotransa {
           await this.closeInstance(id)
         })
 
-        console.log(`Dotransa: Success instance #${this.instances.length + 1} of ${maxInstance}`)
-
         this.instances.push({
           id,
           type: TransType.DeBro,
@@ -224,6 +225,7 @@ export class Dotransa {
           page,
           proxyItem
         } as TBrowserInstance)
+        console.log(`Dotransa: Success instance #${this.instances.length} of ${maxInstance}`)
       })
     )
   }
