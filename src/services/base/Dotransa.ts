@@ -7,7 +7,7 @@ import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanc
 import { Proxifible } from 'dofiltra_api'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import PQueue from 'p-queue'
-import { ProxyItem } from 'dprx-types'
+import { AppState, ProxyItem } from 'dprx-types'
 
 export class Dotransa {
   static instances: TBrowserInstance[] = []
@@ -42,8 +42,7 @@ export class Dotransa {
       this.instanceOpts = instanceOpts
     }
 
-    // await this.createInstances()
-    await this.updateProxies()
+    await this.updateProxies({ forceChangeIp: false })
 
     const queue = this.queue
     // let activeCount = 0
@@ -66,8 +65,8 @@ export class Dotransa {
     return new this(true)
   }
 
-  protected static async updateProxies() {
-    const isDynamicMode = false // _.random(true) > 0.9
+  protected static async updateProxies({ forceChangeIp = true }: { forceChangeIp: boolean }) {
+    const isDynamicMode = false // true
     const sortBy: ('changeUrl' | 'useCount')[] = ['changeUrl', 'useCount']
     const sortOrder: ('asc' | 'desc')[] = [isDynamicMode ? 'asc' : 'desc', 'asc']
 
@@ -77,17 +76,29 @@ export class Dotransa {
         filterVersions: [4],
         sortBy,
         sortOrder,
-        forceChangeIp: true,
-        maxUseCount: 1e3
+        forceChangeIp,
+        maxUseCount: Number.MAX_SAFE_INTEGER
       },
       Number.MAX_SAFE_INTEGER
     )
   }
 
   protected static async getAvailableProxy() {
-    const busyProxies = this.instances.filter((inst) => inst.proxyItem).map((inst) => inst.proxyItem?.url())
+    if (Proxifible.state !== AppState.Active) {
+      await sleep(_.random(5e3, 10e3))
+      return
+    }
 
-    return this.proxies.find((p) => !busyProxies.includes(p.url()))
+    const busyProxies = this.instances.filter((inst) => inst.proxyItem).map((inst) => inst.proxyItem?.url())
+    await this.updateProxies({ forceChangeIp: false })
+    let proxyItem = this.proxies.find((p) => !busyProxies.includes(p.url()))
+
+    if (!proxyItem) {
+      await this.updateProxies({ forceChangeIp: true })
+      proxyItem = this.proxies.find((p) => !busyProxies.includes(p.url()))
+    }
+
+    return proxyItem
   }
 
   protected static async createInstances() {
