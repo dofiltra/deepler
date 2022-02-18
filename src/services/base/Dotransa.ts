@@ -38,17 +38,13 @@ export class Dotransa {
   protected static proxies: ProxyItem[] = []
 
   static async build(instanceOpts?: TInstanceOpts[]) {
-    if (instanceOpts) {
-      this.instanceOpts = instanceOpts
-    }
-
+    await this.updateSettings(instanceOpts)
     await this.updateProxies({ forceChangeIp: false })
 
     const queue = this.queue
     // let activeCount = 0
     // let completedCount = 0
 
-    queue.concurrency = instanceOpts?.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0) || 1
     queue.on('active', () => {
       // console.log(`Dotransa on item #${++activeCount}.  Size: ${queue.size}  Pending: ${queue.pending} | Date: ${new Date().toJSON()}`)
     })
@@ -63,6 +59,13 @@ export class Dotransa {
     })
 
     return new this(true)
+  }
+
+  static async updateSettings(instanceOpts?: TInstanceOpts[]) {
+    if (instanceOpts?.length) {
+      this.instanceOpts = instanceOpts
+    }
+    this.queue.concurrency = instanceOpts?.reduce((sum, instOpts) => sum + instOpts.maxInstance, 0) || 1
   }
 
   protected static async updateProxies({ forceChangeIp = true }: { forceChangeIp: boolean }) {
