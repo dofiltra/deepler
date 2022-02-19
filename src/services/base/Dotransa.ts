@@ -219,6 +219,7 @@ export class Dotransa {
 
         if (!browser || !page || page.isClosed()) {
           await Proxifible.changeUseCountProxy(proxyItem?.url(), Proxifible.limitPerProxy)
+          await sleep(3e3)
           return
         }
 
