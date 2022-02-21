@@ -82,7 +82,7 @@ const debug = async () => {
   const dotransa = await Dotransa.build([
     {
       maxPerUse: 1000,
-      maxInstance: 10,
+      maxInstance: 1,
       headless: false,
       type: TransType.DeBro
     }
