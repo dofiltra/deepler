@@ -30,14 +30,6 @@ export class DeeplBrowser {
       .map((x) => x.translatedText || '')
       .join(' ')
 
-    // for (const split of splits) {
-    //   const { translatedText: microTranslatedText } = await this.microTranslate({
-    //     ...opts,
-    //     text: split
-    //   })
-    //   translatedText += microTranslatedText + ' '
-    // }
-
     return {
       translatedText
     }
@@ -147,11 +139,21 @@ export class DeeplBrowser {
       })
     }
 
-    if (!result) {
+    if (!result?.translatedText) {
       return await this.translate({
         ...opts,
         tryIndex: tryIndex + 1
       })
+    }
+
+    if (result?.translatedText) {
+      const isVialidLang = await DoLangApi.isValidLang(result.translatedText, targetLang)
+      if (!isVialidLang) {
+        return await this.microTranslate({
+          ...opts,
+          tryIndex: tryIndex + 1
+        })
+      }
     }
 
     return result
