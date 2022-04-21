@@ -4,7 +4,7 @@ import crypto from 'crypto'
 import { sleep } from 'time-helpers'
 import { DeeplBrowser, GTransApi } from '../..'
 import { TTranslateOpts, TransType, TTranslateResult, TBrowserInstance, TInstanceOpts } from '../../types/trans'
-import { Proxifible } from 'dofiltra_api'
+import { DoLangApi, Proxifible } from 'dofiltra_api'
 import { BrowserManager, devices, Page } from 'browser-manager'
 import PQueue from 'p-queue'
 import { AppState, ProxyItem } from 'dprx-types'
@@ -283,7 +283,10 @@ export class Dotransa {
       if (prior === TransType.DeBro) {
         result = await new DeeplBrowser().translate(opts)
         if (result?.translatedText) {
-          break
+          const isVialidLang = await DoLangApi.isValidLang(result.translatedText, opts.targetLang)
+          if (isVialidLang) {
+            break
+          }
         }
         continue
       }
