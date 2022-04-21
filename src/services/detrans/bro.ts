@@ -198,26 +198,35 @@ export class DeeplBrowser {
     return null
   }
 
-  protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
+  protected async getTranslatedText({ page }: { page: Page }) {
     try {
-      if (page?.isClosed()) {
-        return null
-      }
-
-      let translatedText = await page.evaluate(() => {
+      const translatedText = await page.evaluate(() => {
         const el: any = Array.from(document.querySelectorAll('textarea')).find((x) =>
           x.className.includes('TargetTextInput-module')
         )
         return el.value
       })
 
+      if (translatedText) {
+        return translatedText
+      }
+    } catch {}
+
+    try {
+      return await (await page?.$('button.lmt__translations_as_text__text_btn'))?.innerText()
+    } catch {}
+  }
+
+  protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
+    try {
+      if (page?.isClosed()) {
+        return null
+      }
+
+      let translatedText = ''
+
       for (let i = 0; i < 10; i++) {
-        translatedText = await page.evaluate(() => {
-          const el: any = Array.from(document.querySelectorAll('textarea')).find((x) =>
-            x.className.includes('TargetTextInput-module')
-          )
-          return el.value
-        })
+        translatedText = await this.getTranslatedText({ page })
 
         if (translatedText?.includes('[.')) {
           await sleep(1e3)
@@ -280,14 +289,17 @@ export class DeeplBrowser {
         timeout: 10e3
       })
     } catch {
-      // const selector = '.lmt__language_select--target button'
-      // await page.click(selector)
-      await page.evaluate(() => {
-        const btn: any = Array.from(document.querySelectorAll("button[type='button']")).find((x) =>
-          x.className.includes('TargetLanguageToolbar')
-        )
-        btn?.click()
-      })
+      try {
+        const selector = '.lmt__language_select--target button'
+        await page.click(selector)
+      } catch {
+        await page.evaluate(() => {
+          const btn: any = Array.from(document.querySelectorAll("button[type='button']")).find((x) =>
+            x.className.includes('TargetLanguageToolbar')
+          )
+          btn?.click()
+        })
+      }
       await sleep(5e3)
 
       const value = lang === 'EN' ? 'en-US' : `${lang.toLowerCase()}-${lang.toUpperCase()}`
