@@ -1,15 +1,29 @@
 /* tslint:disable:no-console */
 /* tslint:disable:no-debugger */
-import { RewriteMode } from 'dprx-types'
+import { ProxyItem, RewriteMode } from 'dprx-types'
 import path from 'path'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { Dotransa } from '.'
 import { TransType } from './types/trans'
+import { Proxifible } from 'dofiltra_api'
 
 const debug = async () => {
   const rootPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
   dotenv.config({ path: path.join(rootPath, `.env`) })
+
+  Proxifible.proxies = [
+    new ProxyItem({
+      _id: '1',
+      type: process.env.PROXY_TYPE,
+      port: process.env.PROXY_PORT,
+      ip: process.env.PROXY_IP,
+      user: process.env.PROXY_USER,
+      pass: process.env.PROXY_PASS,
+      changeUrl: process.env.PROXY_CHANGEURL,
+      version: 4
+    } as ProxyItem)
+  ]
 
   const ruTexts = [
     `Генеральный секретарь НАТО Йенс Столтенберг также повторил свой призыв к России провести «деэскалацию» наращивания военной мощи у границы с Украиной и предупредил о «последствиях» в случае применения силы.`,

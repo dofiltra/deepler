@@ -204,11 +204,20 @@ export class DeeplBrowser {
         return null
       }
 
-      const el = await page?.$('button.lmt__translations_as_text__text_btn')
-      let translatedText = await el?.innerText()
+      let translatedText = await page.evaluate(() => {
+        const el: any = Array.from(document.querySelectorAll('textarea')).find((x) =>
+          x.className.includes('TargetTextInput-module')
+        )
+        return el.value
+      })
 
       for (let i = 0; i < 10; i++) {
-        translatedText = await el?.innerText()
+        translatedText = await page.evaluate(() => {
+          const el: any = Array.from(document.querySelectorAll('textarea')).find((x) =>
+            x.className.includes('TargetTextInput-module')
+          )
+          return el.value
+        })
 
         if (translatedText?.includes('[.')) {
           await sleep(1e3)
@@ -271,8 +280,14 @@ export class DeeplBrowser {
         timeout: 10e3
       })
     } catch {
-      const selector = '.lmt__language_select--target button'
-      await page.click(selector)
+      // const selector = '.lmt__language_select--target button'
+      // await page.click(selector)
+      await page.evaluate(() => {
+        const btn: any = Array.from(document.querySelectorAll("button[type='button']")).find((x) =>
+          x.className.includes('TargetLanguageToolbar')
+        )
+        btn?.click()
+      })
       await sleep(5e3)
 
       const value = lang === 'EN' ? 'en-US' : `${lang.toLowerCase()}-${lang.toUpperCase()}`
