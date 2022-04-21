@@ -294,7 +294,8 @@ export class DeeplBrowser {
       })
     } catch {
       try {
-        const selector = '.lmt__language_select--target button'
+        // const selector = '.lmt__language_select--target button'
+        const selector = '[dl-test="translator-target-lang-btn"]'
         await page.click(selector)
       } catch {
         await page.evaluate(() => {
@@ -306,9 +307,23 @@ export class DeeplBrowser {
       }
       await sleep(5e3)
 
-      const value = lang === 'EN' ? 'en-US' : `${lang.toLowerCase()}-${lang.toUpperCase()}`
-      const selector2 = `[dl-test="translator-lang-option-${value}"]`
-      await page.click(selector2)
+      try {
+        const value = lang === 'EN' ? 'en-US' : `${lang.toLowerCase()}-${lang.toUpperCase()}`
+        const selector2 = `[dl-test="translator-lang-option-${value}"]`
+        await page.click(selector2, {
+          timeout: 15
+        })
+      } catch {
+        try {
+          const value = lang === 'EN' ? 'en-US' : `${lang.toLowerCase()}`
+          const selector2 = `[dl-test="translator-lang-option-${value}"]`
+          await page.click(selector2, {
+            timeout: 15
+          })
+        } catch {
+          //
+        }
+      }
     }
 
     await sleep(5e3)
