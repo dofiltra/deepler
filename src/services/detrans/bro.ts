@@ -210,11 +210,15 @@ export class DeeplBrowser {
       if (translatedText) {
         return translatedText
       }
-    } catch {}
+    } catch {
+      //
+    }
 
     try {
       return await (await page?.$('button.lmt__translations_as_text__text_btn'))?.innerText()
-    } catch {}
+    } catch {
+      //
+    }
   }
 
   protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
