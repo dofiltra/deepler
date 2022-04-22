@@ -283,7 +283,7 @@ export class Dotransa {
       if (prior === TransType.DeBro) {
         result = await new DeeplBrowser().translate(opts)
         if (result?.translatedText) {
-          const isVialidLang = await DoLangApi.isValidLang(result.translatedText, opts.targetLang)
+          const isVialidLang = await DoLangApi.isValidLang(result.translatedText, opts.targetLang, 0.45)
           if (isVialidLang) {
             break
           }

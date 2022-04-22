@@ -147,7 +147,7 @@ export class DeeplBrowser {
     }
 
     if (result?.translatedText) {
-      const isVialidLang = await DoLangApi.isValidLang(result.translatedText, targetLang)
+      const isVialidLang = await DoLangApi.isValidLang(result.translatedText, targetLang, 0.45)
       if (!isVialidLang) {
         return await this.microTranslate({
           ...opts,
