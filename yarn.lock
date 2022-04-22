@@ -539,10 +539,10 @@ docopt@~0.6.2:
   resolved "https://registry.yarnpkg.com/docopt/-/docopt-0.6.2.tgz#b28e9e2220da5ec49f7ea5bb24a47787405eeb11"
   integrity sha1-so6eIiDaXsSffqW7JKR3h0Be6xE=
 
-dofiltra_api@^1.1.50:
-  version "1.1.50"
-  resolved "https://registry.yarnpkg.com/dofiltra_api/-/dofiltra_api-1.1.50.tgz#27d9c179ad43ac79e2635f1788454db7657eb2bc"
-  integrity sha512-SELV/JlNO3bxLO1p6dyMoSXO+BBD+LqgOsXABTdIIM51dJ/YgxC6+tR0vtBa0DanzR2+wPVCLjkC2FfgLP7yzw==
+dofiltra_api@^1.1.51:
+  version "1.1.51"
+  resolved "https://registry.yarnpkg.com/dofiltra_api/-/dofiltra_api-1.1.51.tgz#4862cf99efd5a08ac600d85562c0775034ae4b76"
+  integrity sha512-VKiY2ljHNdQv55nAu7ZC6kXdeTnUMugXC+eyT/tT8zMvHLKoVCtuLFqaTTjqRyQF7v2a81HhQsyGISX+h1cqlQ==
   dependencies:
     dotenv "^16.0.0"
     dprx-types "^1.1.118"
