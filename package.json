@@ -1,6 +1,6 @@
 {
   "name": "deepler",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -47,7 +47,7 @@
   "dependencies": {
     "@vitalets/google-translate-api": "^7.0.0",
     "browser-manager": "^1.1.20",
-    "dofiltra_api": "^1.1.50",
+    "dofiltra_api": "^1.1.51",
     "dotenv": "^16.0.0",
     "dprx-types": "^1.1.71",
     "is-running-process": "^1.0.0",
