@@ -214,7 +214,7 @@ export class Dotransa {
           waitUntil: 'networkidle',
           blackList: {
             resourceTypes: [
-              //'stylesheet',
+              // 'stylesheet',
               'image',
               'media'
             ]
