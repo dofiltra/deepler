@@ -18,7 +18,7 @@ export class DeeplBrowser {
 
     return await Promise.race([
       await new Promise<TTranslateResult>(async (resolve) => {
-        await sleep(groupedSplits.length * 60)
+        await sleep(groupedSplits.length * 1000 * 60)
         return resolve({ translatedText: '' })
       }),
 
