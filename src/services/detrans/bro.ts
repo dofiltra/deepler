@@ -17,12 +17,12 @@ export class DeeplBrowser {
     const groupedSplits = groupByLimit(splits, this.limit)
 
     return await Promise.race([
-      await new Promise<TTranslateResult>(async (resolve) => {
+      new Promise<TTranslateResult>(async (resolve) => {
         await sleep(groupedSplits.length * 1000 * 60)
         return resolve({ translatedText: '' })
       }),
 
-      await new Promise<TTranslateResult>(async (resolve) => {
+      new Promise<TTranslateResult>(async (resolve) => {
         const translatedText = (
           await Promise.all(
             groupedSplits.map(
