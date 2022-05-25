@@ -16,23 +16,32 @@ export class DeeplBrowser {
     const splits: string[] = await this.getSplits(opts.text)
     const groupedSplits = groupByLimit(splits, this.limit)
 
-    const translatedText = (
-      await Promise.all(
-        groupedSplits.map(
-          async (split) =>
-            await this.microTranslate({
-              ...opts,
-              text: split
-            })
-        )
-      )
-    )
-      .map((x) => x.translatedText || '')
-      .join(' ')
+    return await Promise.race([
+      await new Promise<TTranslateResult>(async (resolve) => {
+        await sleep(groupedSplits.length * 60)
+        return resolve({ translatedText: '' })
+      }),
 
-    return {
-      translatedText
-    }
+      await new Promise<TTranslateResult>(async (resolve) => {
+        const translatedText = (
+          await Promise.all(
+            groupedSplits.map(
+              async (split) =>
+                await this.microTranslate({
+                  ...opts,
+                  text: split
+                })
+            )
+          )
+        )
+          .map((x) => x.translatedText || '')
+          .join(' ')
+
+        return resolve({
+          translatedText
+        })
+      })
+    ])
   }
 
   async microTranslate(opts: TTranslateOpts): Promise<TTranslateResult> {
@@ -201,10 +210,8 @@ export class DeeplBrowser {
   protected async getTranslatedText({ page }: { page: Page }) {
     try {
       const translatedText = await page.evaluate(() => {
-        const el: any = Array.from(document.querySelectorAll('textarea')).find((x) =>
-          x.className.includes('TargetTextInput-module')
-        )
-        return el.value
+        const el = document.querySelectorAll('textarea')[1]
+        return el?.value
       })
 
       if (translatedText) {
@@ -223,14 +230,14 @@ export class DeeplBrowser {
 
   protected async getResultFromHtml(page: Page, text: string): Promise<TTranslateResult | null> {
     try {
-      if (page?.isClosed()) {
+      if (!page || page.isClosed()) {
         return null
       }
 
       let translatedText = ''
 
       for (let i = 0; i < 10; i++) {
-        translatedText = await this.getTranslatedText({ page })
+        translatedText = (await this.getTranslatedText({ page })) || ''
 
         if (translatedText?.includes('[.')) {
           await sleep(1e3)
@@ -332,7 +339,7 @@ export class DeeplBrowser {
   protected async typing(page: Page, text: string) {
     try {
       const isMac = process.platform === 'darwin'
-      const sourceSelector = 'textarea.lmt__source_textarea'
+      const sourceSelector = 'textarea'
 
       await page.click(sourceSelector)
       await page.press(sourceSelector, isMac ? 'Meta+KeyA' : 'Control+KeyA')
