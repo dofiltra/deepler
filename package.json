@@ -47,7 +47,7 @@
   "dependencies": {
     "@vitalets/google-translate-api": "^8.0.0",
     "browser-manager": "^1.1.21",
-    "dofiltra_api": "^1.1.52",
+    "dofiltra_api": "^1.1.61",
     "dotenv": "^16.0.1",
     "dprx-types": "^1.1.120",
     "is-running-process": "^1.0.0",
