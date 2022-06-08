@@ -13,6 +13,12 @@ export class DeeplBrowser {
   protected limit = 3500
 
   async translate(opts: TTranslateOpts): Promise<TTranslateResult> {
+    const isVialidLang = await DoLangApi.isValidLang(opts.text, opts.targetLang, 0.45)
+
+    if (isVialidLang) {
+      return { translatedText: opts.text }
+    }
+
     const splits: string[] = await this.getSplits(opts.text)
     const groupedSplits = groupByLimit(splits, this.limit)
 
@@ -49,6 +55,11 @@ export class DeeplBrowser {
 
     if (tryIndex >= tryLimit) {
       return { translatedText: text }
+    }
+
+    const isVialidLang = await DoLangApi.isValidLang(text, targetLang, 0.45)
+    if (isVialidLang) {
+      return { translatedText: opts.text }
     }
 
     const inst = await Dotransa.getInstance(TransType.DeBro)

@@ -283,31 +283,34 @@ export class Dotransa {
   ) {
     let result
 
-    for (const prior of priors) {
-      if (prior === TransType.DeBro) {
-        result = await new DeeplBrowser().translate(opts)
-        if (result?.translatedText) {
-          const isVialidLang = await DoLangApi.isValidLang(result.translatedText, opts.targetLang, 0.45)
-          if (isVialidLang) {
+    const isVialidLang = await DoLangApi.isValidLang(opts.text, opts.targetLang, 0.45)
+
+    if (!isVialidLang) {
+      for (const prior of priors) {
+        if (prior === TransType.DeBro) {
+          result = await new DeeplBrowser().translate(opts)
+          if (result?.translatedText) {
+            const isVialidLang = await DoLangApi.isValidLang(result.translatedText, opts.targetLang, 0.45)
+            if (isVialidLang) {
+              break
+            }
+          }
+          continue
+        }
+
+        if (prior === TransType.GoApi) {
+          result = await new GTransApi().translate(opts)
+          if (result?.translatedText) {
             break
           }
+          continue
         }
-        continue
-      }
 
-      if (prior === TransType.GoApi) {
-        result = await new GTransApi().translate(opts)
-        if (result?.translatedText) {
-          break
+        if (prior === TransType.YaBro) {
+          continue
         }
-        continue
-      }
-
-      if (prior === TransType.YaBro) {
-        continue
       }
     }
-
     Dotransa.translateResults[queueId] = result || { translatedText: opts.text }
 
     return {
